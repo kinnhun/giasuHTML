@@ -1,0 +1,259 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2c3e50;
+    background-image: url('../images/bg-pattern.svg');
+    /* hoặc tên ảnh bạn có */
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* hoặc contain tùy layout */
+    background-position: center center;
+    background-attachment: fixed;
+    /* cuộn không bị mất nền */
+}
+
+
+/* ==== MÀU THƯƠNG HIỆU ==== */
+.text-brand-blue {
+    color: #2c3e50;
+    /* Xanh đậm Edu */
+}
+
+.text-brand-red {
+    color: #e74c3c;
+    /* Đỏ EduMentor */
+}
+
+.text-brand-yellow {
+    color: #ffc107;
+    /* Vàng dùng làm viền / nhấn */
+}
+
+.bg-brand-blue {
+    background-color: #2c3e50;
+}
+
+.bg-brand-red {
+    background-color: #e74c3c;
+}
+
+.bg-brand-yellow {
+    background-color: #ffc107;
+}
+
+/* ==== NÚT ==== */
+.btn-edumentor {
+    background-color: #e74c3c;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-edumentor:hover {
+    background-color: #c0392b;
+    color: #ffffff;
+}
+
+
+
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+
+
+
+/* ====================================================================== ==== */
+
+
+.section-1 {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    padding: 2rem 0;
+}
+
+.section-1__container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 1rem;
+}
+
+
+.section-1__logo img {
+    height: 4rem;
+    margin-bottom: -12rem;
+    margin-left: -5rem;
+}
+
+.section-1__image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
+.section-1__heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.section-1__quote-box {
+    background-color: #ffffff;
+    padding: 1.5rem 2rem;
+    border-left: 5px solid #2c3e50;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+.section-1__quote-text {
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+}
+
+.section-1__quote-sign {
+    font-size: 1rem;
+}
+
+.section-1__cta {
+    font-size: 1rem;
+    padding: 0.6rem 1.6rem;
+}
+
+
+
+
+
+
+
+
+/* ====================================================================== ==== */
+.section-2__headline {
+    line-height: 1.3;
+}
+
+.section-2__steps-box {
+    background-color: #fff;
+    border: 2px solid #dcdcdc;
+    border-radius: 1rem;
+}
+
+.section-2__steps-box h5 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-2__steps-box p {
+    font-size: 1rem;
+}
+
+.section-2__image {
+    max-width: 100%;
+    border-radius: 0.75rem;
+}
+
+.section-2__cta {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+
+
+
+
+/* ====================================================================== ==== */
+
+
+.section-3__heading {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ff4c4c;
+    text-shadow: 2px 2px 0 #fff, 4px 4px 0 #e74c3c;
+    letter-spacing: 2px;
+}
+
+.border-purple {
+    border-color: #7b4dff !important;
+}
+
+.section-3__box {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.section-3__list li {
+    margin-bottom: 0.8rem;
+}
+
+.section-3__note {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+
+
+/* ====================================================================== ==== */
+.footer {
+    background-color: #f8f9fa;
+    /* Nền sáng thay vì #2c3e50 */
+    color: #2c3e50;
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+}
+
+.footer__link-list a {
+    color: #2c3e50;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.footer__link-list a:hover {
+    color: #e74c3c;
+    /* Hover đỏ EduMentor */
+}
+
+.footer__social {
+    color: #2c3e50;
+    font-size: 1.4rem;
+    transition: color 0.3s ease;
+}
+
+.footer__social:hover {
+    color: #e74c3c;
+}
+
+.footer .footer__title {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
+
+.footer .footer__text {
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.footer .footer__bottom {
+    font-size: 0.85rem;
+    color: #777;
+    margin-top: 2rem;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+}
