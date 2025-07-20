@@ -382,7 +382,7 @@ body {
 /* ====================================================================== ==== */
 
 .section-2 {
-    margin-top: 2rem;
+    margin-top: 3.5rem;
 }
 
 
@@ -521,7 +521,7 @@ body {
     /* 2px */
     border-radius: 0.75rem;
     /* 12px */
-    padding: 1.5rem;
+    padding: 0.65rem;
     /* 24px */
     max-width: 56.25rem;
     /* 900px */
@@ -575,44 +575,42 @@ body {
 .btn-edumentor {
     background-color: #e74c3c;
     color: white;
-    font-weight: 700;
-    padding: 0.625rem 1.25rem;
-    /* 10px 20px */
-    border-radius: 2.5rem;
-    /* 40px */
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    /* ~4.8px 9.6px */
+    border-radius: 1rem;
+    /* ~16px */
     border: none;
-    font-size: 0.9rem;
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-    /* 0 4px 8px */
+    font-size: 0.75rem;
+    /* ~12px */
+    box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
+    /* ~1.6px 3.2px */
     transition: all 0.3s ease;
 }
 
 .btn-edumentor:hover {
     background-color: #c0392b;
-    transform: translateY(-0.125rem);
-    /* -2px */
+    transform: translateY(-0.08rem);
+    /* ~1.28px */
 }
 
 
 
-
-
-
-
-
-
-
-
-
-.section-2__image {
-    max-width: 100%;
-    border-radius: 0.75rem;
-}
 
 .section-2__cta {
     font-size: 1rem;
     font-weight: 600;
 }
+
+
+
+.section-2__image {
+    width: 110%;
+
+}
+
+
+
 
 
 
