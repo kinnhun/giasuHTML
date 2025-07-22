@@ -1,51 +1,23 @@
+<!-- HTML -->
 <section class="section-4 py-5">
     <div class="container">
-        <h2 class="section-4__heading text-center mb-4">
-            DANH SÁCH LỚP GIA SƯ MỚI NHẤT
-        </h2>
-        <div class="row g-4">
-            <!-- Lớp 1 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="section-4__card">
-                    <h5 class="section-4__subject">Toán lớp 9</h5>
-                    <ul class="section-4__info list-unstyled mb-3">
-                        <li><strong>Khu vực:</strong> Quận 1, TP.HCM</li>
-                        <li><strong>Lịch học:</strong> 2-4-6 (18h - 19h30)</li>
-                        <li><strong>Học phí:</strong> 2.000.000đ/tháng</li>
-                        <li><strong>Yêu cầu:</strong> Sinh viên năm 2+ sư phạm Toán</li>
-                    </ul>
-                    <button class="btn-edumentor w-100">Nhận lớp ngay</button>
-                </div>
-            </div>
+        <h2 class="section-4__heading text-center mb-4">DANH SÁCH LỚP GIA SƯ MỚI NHẤT</h2>
 
-            <!-- Lớp 2 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="section-4__card">
-                    <h5 class="section-4__subject">Tiếng Anh giao tiếp</h5>
-                    <ul class="section-4__info list-unstyled mb-3">
-                        <li><strong>Khu vực:</strong> Gò Vấp</li>
-                        <li><strong>Lịch học:</strong> Tối T7 & CN</li>
-                        <li><strong>Học phí:</strong> 1.800.000đ/tháng</li>
-                        <li><strong>Yêu cầu:</strong> Có IELTS ≥ 6.5</li>
-                    </ul>
-                    <button class="btn-edumentor w-100">Nhận lớp ngay</button>
-                </div>
+        <!-- Bộ lọc và tìm kiếm -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-2">
+                <input type="text" id="classSearchInput" class="form-control"
+                    placeholder="Tìm theo mã môn, khu vực, học phí...">
             </div>
-
-            <!-- Lớp 3 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="section-4__card">
-                    <h5 class="section-4__subject">Văn lớp 6</h5>
-                    <ul class="section-4__info list-unstyled mb-3">
-                        <li><strong>Khu vực:</strong> Bình Thạnh</li>
-                        <li><strong>Lịch học:</strong> 3 buổi/tuần (17h - 18h30)</li>
-                        <li><strong>Học phí:</strong> 1.500.000đ/tháng</li>
-                        <li><strong>Yêu cầu:</strong> Nữ, có kinh nghiệm dạy Văn</li>
-                    </ul>
-                    <button class="btn-edumentor w-100">Nhận lớp ngay</button>
-                </div>
+            <div class="col-md-3 mb-2">
+                <select id="areaFilter" class="form-select">
+                    <option value="">Tất cả khu vực</option>
+                </select>
             </div>
+        </div>
 
+        <div class="row g-4" id="classListContainer">
+            <div class="text-center w-100" id="loading">Đang tải dữ liệu lớp học...</div>
         </div>
     </div>
 </section>
