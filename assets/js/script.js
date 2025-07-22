@@ -22,9 +22,9 @@ function loadComponent(id, path) {
 
 loadComponent("header", "components/header.html");
 loadComponent("section-1", "components/section-1.html");
-loadComponent("section-2", "components/sestion-2.html");
-loadComponent("section-3", "components/sestion-3.html");
-loadComponent("section-4", "components/sestion-4.html").then(() => {
+loadComponent("section-2", "components/section-2.html");
+loadComponent("section-3", "components/section-3.html");
+loadComponent("section-4", "components/section-4.html").then(() => {
     loadClassListFromSheet();
 
     setInterval(() => {
