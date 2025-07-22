@@ -6,8 +6,6 @@ function loadComponent(id, path) {
             if (!container) return;
 
             container.innerHTML = html;
-
-            // Kích hoạt lại các <script>
             const scripts = container.querySelectorAll("script");
             scripts.forEach(oldScript => {
                 const newScript = document.createElement("script");
@@ -53,7 +51,6 @@ function enableSmartScroll() {
                 const currentSection = entry.target;
                 const nextSection = getNextSection(currentSection.id);
                 if (nextSection) {
-                    // Delay nhỏ để tránh giật
                     setTimeout(() => {
                         nextSection.scrollIntoView({ behavior: 'smooth' });
                     }, 200);
@@ -81,7 +78,6 @@ function enableSmartScroll() {
                 const currentSection = entry.target;
                 const nextSection = getNextSection(currentSection.id);
                 if (nextSection) {
-                    // Delay nhỏ để tránh giật
                     setTimeout(() => {
                         nextSection.scrollIntoView({ behavior: 'smooth' });
                     }, 200);
@@ -116,8 +112,6 @@ function addSectionAnimations() {
                 heading.classList.add('animate-zoom-in');
                 quoteBox.classList.add('animate-fade-in-up');
                 cta.classList.add('animate-pulse-loop');
-
-                // Ngừng theo dõi để không trigger lại
                 observer.unobserve(section);
             }
         });
@@ -172,7 +166,6 @@ function applyFilters(resetPage = true) {
     if (resetPage) {
         currentPage = 1;
     } else {
-        // Nếu currentPage lớn hơn tổng số trang sau khi cập nhật dữ liệu mới → quay lại trang cuối cùng
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
         if (currentPage > totalPages) currentPage = totalPages || 1;
     }
@@ -247,6 +240,13 @@ function renderPagination(data) {
             currentPage = page;
             renderClassCards(data);
             renderPagination(data);
+            const target = document.getElementById("classListContainer");
+            if (target) {
+                const offset = 90;
+                const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({ top, behavior: "smooth" });
+            }
+
         });
         return btn;
     };
@@ -260,9 +260,7 @@ function renderPagination(data) {
     paginationContainer.appendChild(createBtn("»", currentPage + 1, false, currentPage === totalPages));
 }
 
-// Gắn sự kiện
 document.getElementById("classSearchInput").addEventListener("input", applyFilters);
 
-// Load lần đầu
 loadClassListFromSheet();
 setInterval(loadClassListFromSheet, 3 * 60 * 1000);
