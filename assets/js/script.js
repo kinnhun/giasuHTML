@@ -30,7 +30,12 @@ loadComponent("section-4", "components/sestion-4.html").then(() => {
     loadClassListFromSheet();
 
     setInterval(() => {
-        loadClassListFromSheet();
+        fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/L%E1%BB%9Bp%20m%E1%BB%9Bi")
+            .then(res => res.json())
+            .then(data => {
+                allClassData = data;
+                applyFilters(false);
+            });
     }, 1000);
 
 });
@@ -134,8 +139,9 @@ window.addEventListener('load', () => {
 
 
 
-
 let allClassData = [];
+let currentPage = 1;
+const itemsPerPage = 6;
 
 function loadClassListFromSheet() {
     const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/L%E1%BB%9Bp%20m%E1%BB%9Bi";
@@ -153,37 +159,28 @@ function loadClassListFromSheet() {
         });
 }
 
-function populateAreaFilter(data) {
-    const select = document.getElementById("areaFilter");
-    if (!select) return;
-
-    select.innerHTML = `<option value="">Tất cả khu vực</option>`;
-
-    const areas = [...new Set(data.map(d => d["Khu vực"]?.trim()).filter(Boolean))].sort();
-    areas.forEach(area => {
-        const option = document.createElement("option");
-        option.value = area.trim(); // KHÔNG dùng toLowerCase
-        option.textContent = area.trim();
-        select.appendChild(option);
-    });
-}
-
-function applyFilters() {
+function applyFilters(resetPage = true) {
     const keyword = document.getElementById("classSearchInput").value.replace(/\s+/g, ' ').trim().toLowerCase();
-    const selectedArea = document.getElementById("areaFilter").value.trim();
 
     const filtered = allClassData.filter(item => {
         const rawText = `${item["Mã môn"]} ${item["Môn"]} ${item["Khu vực"]} ${item["Lịch học"]} ${item["Học phí"]} ${item["Yêu cầu"]}`;
         const text = rawText.replace(/\s+/g, ' ').trim().toLowerCase();
 
-        const matchesKeyword = text.includes(keyword);
-        const matchesArea = !selectedArea || item["Khu vực"]?.replace(/\s+/g, ' ').trim() === selectedArea;
-
-        return matchesKeyword && matchesArea;
+        return text.includes(keyword);
     });
 
+    if (resetPage) {
+        currentPage = 1;
+    } else {
+        // Nếu currentPage lớn hơn tổng số trang sau khi cập nhật dữ liệu mới → quay lại trang cuối cùng
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages || 1;
+    }
+
     renderClassCards(filtered);
+    renderPagination(filtered);
 }
+
 
 function renderClassCards(data) {
     const container = document.getElementById("classListContainer");
@@ -196,37 +193,76 @@ function renderClassCards(data) {
         return;
     }
 
-    data.forEach(item => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentItems = data.slice(startIndex, endIndex);
+
+    currentItems.forEach(item => {
         if (!item["Môn"] || !item["Khu vực"]) return;
 
         const card = document.createElement("div");
         card.className = "col-lg-4 col-md-6";
         card.innerHTML = `
-      <div class="section-4__card">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h5 class="section-4__subject mb-0">${item["Môn"].trim()}</h5>
-          <span class="badge bg-secondary">Mã: ${item["Mã môn"]?.trim() || "Không có"}</span>
+        <div class="section-4__card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="section-4__subject mb-0">${item["Môn"].trim()}</h5>
+                <span class="badge bg-secondary">Mã: ${item["Mã môn"]?.trim() || "Không có"}</span>
+            </div>
+            <ul class="section-4__info list-unstyled mb-3">
+                <li><strong>Khu vực:</strong> ${item["Khu vực"].trim()}</li>
+                <li><strong>Lịch học:</strong> ${item["Lịch học"]?.trim() || "Đang cập nhật"}</li>
+                <li><strong>Học phí:</strong> ${item["Học phí"]?.trim() || "Liên hệ"}</li>
+                <li><strong>Yêu cầu:</strong> ${item["Yêu cầu"]?.trim() || "Không yêu cầu cụ thể"}</li>
+            </ul>
+            <button class="btn-edumentor w-100">Nhận lớp ngay</button>
         </div>
-        <ul class="section-4__info list-unstyled mb-3">
-          <li><strong>Khu vực:</strong> ${item["Khu vực"].trim()}</li>
-          <li><strong>Lịch học:</strong> ${item["Lịch học"]?.trim() || "Đang cập nhật"}</li>
-          <li><strong>Học phí:</strong> ${item["Học phí"]?.trim() || "Liên hệ"}</li>
-          <li><strong>Yêu cầu:</strong> ${item["Yêu cầu"]?.trim() || "Không yêu cầu cụ thể"}</li>
-        </ul>
-        <button class="btn-edumentor w-100">Nhận lớp ngay</button>
-      </div>
-    `;
+        `;
         container.appendChild(card);
     });
 }
 
+function renderPagination(data) {
+    const paginationContainerId = "paginationControls";
+    let paginationContainer = document.getElementById(paginationContainerId);
+
+    if (!paginationContainer) {
+        paginationContainer = document.createElement("div");
+        paginationContainer.id = paginationContainerId;
+        paginationContainer.className = "d-flex justify-content-center mt-4 flex-wrap gap-2";
+        document.querySelector(".section-4 .container").appendChild(paginationContainer);
+    }
+
+    paginationContainer.innerHTML = "";
+
+    const totalPages = Math.ceil(data.length / itemsPerPage);
+
+    if (totalPages <= 1) return;
+
+    const createBtn = (text, page, isActive = false, disabled = false) => {
+        const btn = document.createElement("button");
+        btn.className = `btn btn-sm ${isActive ? 'btn-primary' : 'btn-outline-primary'}`;
+        btn.disabled = disabled;
+        btn.textContent = text;
+        btn.addEventListener("click", () => {
+            currentPage = page;
+            renderClassCards(data);
+            renderPagination(data);
+        });
+        return btn;
+    };
+
+    paginationContainer.appendChild(createBtn("«", currentPage - 1, false, currentPage === 1));
+
+    for (let i = 1; i <= totalPages; i++) {
+        paginationContainer.appendChild(createBtn(i, i, i === currentPage));
+    }
+
+    paginationContainer.appendChild(createBtn("»", currentPage + 1, false, currentPage === totalPages));
+}
+
 // Gắn sự kiện
 document.getElementById("classSearchInput").addEventListener("input", applyFilters);
-document.getElementById("areaFilter").addEventListener("change", applyFilters);
 
-// Gọi khi load trang
+// Load lần đầu
 loadClassListFromSheet();
-
-// Cập nhật mỗi 3 phút
 setInterval(loadClassListFromSheet, 3 * 60 * 1000);
-

@@ -1105,6 +1105,31 @@ body {
 
 
 
+#paginationControls .btn {
+    border-color: #e74c3c;
+    color: #e74c3c;
+    transition: all 0.2s ease-in-out;
+}
+
+
+#paginationControls .btn:hover:not(:disabled):not(.btn-primary) {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+
+#paginationControls .btn-primary {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    color: #fff;
+
+}
+
+
+#paginationControls .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 
 
