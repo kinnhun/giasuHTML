@@ -37,7 +37,9 @@ loadComponent("section-4", "components/section-4.html").then(() => {
     }, 1000);
 
 });
-
+// loadComponent("section-5", "components/section-5.html").then(() => {
+//     loadFeedbackSection();
+// });
 loadComponent("footer", "components/footer.html");
 
 
@@ -264,3 +266,63 @@ document.getElementById("classSearchInput").addEventListener("input", applyFilte
 
 loadClassListFromSheet();
 setInterval(loadClassListFromSheet, 3 * 60 * 1000);
+
+
+
+
+
+
+
+
+// function loadFeedbackSection() {
+//     fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Feedback")
+//         .then(res => res.json())
+//         .then(data => {
+//             const container = document.getElementById("feedbackContainer");
+//             container.innerHTML = "";
+
+//             data.forEach(item => {
+//                 const imgSrc = convertDriveLinkToImage(item["Link feedback"]);
+//                 const name = item["Tên giáo viên"] || "Ẩn danh";
+//                 const role = item["Vai trò"] || "";
+//                 const text = item["Nội dung feedback"] || "";
+
+//                 container.innerHTML += `
+//                     <div class="col-md-4">
+//                         <div class="section-5__card p-4 h-100">
+//                             <p class="section-5__text">“${text}”</p>
+//                             <div class="d-flex align-items-center mt-3">
+//                                 <img src="${imgSrc}" class="section-5__avatar me-3" alt="avatar" width="60" height="60" loading="lazy">
+//                                 <div>
+//                                     <strong class="section-5__name">${name}</strong><br>
+//                                     <span class="text-muted">${role}</span>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 `;
+//             });
+//         })
+//         .catch(err => {
+//             document.getElementById("feedbackContainer").innerHTML =
+//                 `<p class="text-danger text-center">Không thể tải feedback.</p>`;
+//             console.error(err);
+//         });
+// }
+// function convertDriveLinkToImage(link) {
+//     if (!link) return "https://via.placeholder.com/80?text=No+Image";
+
+//     // Ưu tiên link dạng file/d/ID/view
+//     let match = link.match(/\/file\/d\/([^/]+)\//);
+//     if (match && match[1]) {
+//         return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+//     }
+
+//     // Hoặc link dạng download?id=ID
+//     match = link.match(/id=([^&]+)/);
+//     if (match && match[1]) {
+//         return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+//     }
+
+//     return "https://via.placeholder.com/80?text=No+Image";
+// }

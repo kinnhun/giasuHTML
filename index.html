@@ -53,6 +53,111 @@
     </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <section class="section-5 py-5">
+        <div class="container">
+            <h2 class="text-center section-5__heading mb-5">PHẢN HỒI TỪ GIA SƯ</h2>
+            <div class="row g-4" id="feedbackContainer">
+                <div class="text-center w-100">Đang tải feedback...</div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function loadFeedbackSection() {
+            fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Feedback")
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! Status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    const container = document.getElementById("feedbackContainer");
+                    container.innerHTML = "";
+
+                    if (data.length === 0) {
+                        container.innerHTML = `<p class="text-warning text-center">Không có feedback nào trong sheet.</p>`;
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        const imgSrc = convertDriveLinkToImage(item["Link feedback"]);
+                        const name = item["Tên giáo viên"] || "Ẩn danh";
+                        const role = item["Vai trò"] || "";
+                        const text = item["Nội dung feedback"] || "";
+
+                        container.innerHTML += `
+                    <div class="col-md-4">
+                        <div class="section-5__card p-4 h-100">
+                            <p class="section-5__text">“${text}”</p>
+                            <div class="d-flex align-items-center mt-3">
+                                <img src="${imgSrc}" class="section-5__avatar me-3" alt="avatar" width="60" height="60" loading="lazy">
+                                <div>
+                                    <strong class="section-5__name">${name}</strong><br>
+                                    <span class="text-muted">${role}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                    });
+                })
+                .catch(err => {
+                    document.getElementById("feedbackContainer").innerHTML =
+                        `<p class="text-danger text-center">Không thể tải feedback: ${err.message}</p>`;
+                    console.error("Fetch error:", err);
+                });
+        }
+
+        function convertDriveLinkToImage(link) {
+            if (!link) return "https://via.placeholder.com/80?text=No+Image";
+
+            // Handle Google Drive links in the format /file/d/ID/view
+            const fileMatch = link.match(/\/file\/d\/([^/]+)\/view/);
+            if (fileMatch && fileMatch[1]) {
+                return `https://drive.google.com/thumbnail?id=${fileMatch[1]}`;
+            }
+
+            // Handle Google Drive links in the format open?id=ID
+            const openMatch = link.match(/open\?id=([^&]+)/);
+            if (openMatch && openMatch[1]) {
+                return `https://drive.google.com/thumbnail?id=${openMatch[1]}`;
+            }
+
+            // Handle direct download links in the format drive.usercontent.google.com/download?id=ID
+            const downloadMatch = link.match(/drive\.usercontent\.google\.com\/download\?id=([^&]+)/);
+            if (downloadMatch && downloadMatch[1]) {
+                return `https://drive.google.com/thumbnail?id=${downloadMatch[1]}`;
+            }
+
+            // Return placeholder if no valid ID is found
+            return "https://via.placeholder.com/80?text=No+Image";
+        }
+
+        // Call when DOM is ready
+        document.addEventListener("DOMContentLoaded", () => {
+            loadFeedbackSection();
+        });
+    </script>
+
+
+
+
+
+
+
     <!-- Footer -->
     <div id="footer" class="container py-4"></div>
     <div class="section-divider with-icon">
