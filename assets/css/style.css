@@ -254,7 +254,7 @@ body {
 /* Nút CTA tổng thể */
 .section-1__cta {
     display: inline-block;
-    font-size: 0.9rem;
+    font-size: 1.5rem !important;
     font-weight: 500;
     text-transform: uppercase;
     padding: 0.5rem 1.6rem;
@@ -400,7 +400,7 @@ body {
     }
 
     .section-1__heading {
-        font-size: 1.5rem;
+        font-size: 2.5rem !important;
         padding: 0.4rem 1.2rem;
         line-height: 1.3;
         margin-top: 1.5rem;
@@ -1191,10 +1191,104 @@ body {
     padding-top: 1rem;
 }
 
+/* ====================================================================== ==== */
+
+
+.floating-social-buttons {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+    z-index: 1000;
+}
+
+.contact-popup {
+    display: none;
+    background-color: #e74c3c;
+    color: white;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform-origin: center;
+}
 
 
 
+/* Chỉ hiện khi hover */
+.floating-social-buttons:hover .contact-popup {
+    display: inline-block;
+}
 
+.social-button {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    width: 4rem;
+    height: 4rem;
+    animation: wiggleZoom 1.6s infinite ease-in-out;
+}
+
+.social-button:hover {
+    transform: scale(2);
+}
+
+.social-button img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+/* Optional animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes wiggleZoom {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    20% {
+        transform: scale(1.3) rotate(-4deg);
+    }
+
+    40% {
+        transform: scale(1.33) rotate(4deg);
+    }
+
+    60% {
+        transform: scale(1.3) rotate(-3deg);
+    }
+
+    80% {
+        transform: scale(1.25) rotate(3deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+
+.footer {
+    margin-bottom: -7rem;
+}
 
 /* ====================================================================== ==== */
 
