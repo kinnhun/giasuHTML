@@ -99,18 +99,22 @@
                         const text = item["Nội dung feedback"] || "";
 
                         container.innerHTML += `
-                    <div class="col-md-4">
-                        <div class="section-5__card p-4 h-100">
-                            <p class="section-5__text">“${text}”</p>
-                            <div class="d-flex align-items-center mt-3">
-                                <img src="${imgSrc}" class="section-5__avatar me-3" alt="avatar" width="60" height="60" loading="lazy">
-                                <div>
-                                    <strong class="section-5__name">${name}</strong><br>
-                                    <span class="text-muted">${role}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  <div class="col-md-4">
+    <div class="section-5__card p-4 h-100">
+        <div class="row g-0 h-100">
+            <div class="col-md-4">
+                <img src="${imgSrc}" class="section-5__feedback-img w-100 h-100" alt="Feedback image" style="border-radius: 8px 0 0 8px; object-fit: cover;" loading="lazy">
+            </div>
+            <div class="col-md-8">
+                <p class="section-5__text">“${text}”</p>
+                <div class="mt-3">
+                    <strong class="section-5__name">${name}</strong><br>
+                    <span class="text-muted">${role}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                 `;
                     });
                 })
