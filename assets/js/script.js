@@ -37,9 +37,11 @@ loadComponent("section-4", "components/section-4.html").then(() => {
     }, 1000);
 
 });
-// loadComponent("section-5", "components/section-5.html").then(() => {
-//     loadFeedbackSection();
-// });
+loadComponent("section-5", "components/section-5.html").then(() => {
+
+    loadFeedbackSection();
+
+});
 loadComponent("footer", "components/footer.html");
 
 
@@ -273,56 +275,74 @@ setInterval(loadClassListFromSheet, 3 * 60 * 1000);
 
 
 
+function convertDriveLinkToImage(link) {
+    if (!link) return "https://via.placeholder.com/300x200?text=No+Image";
+    const fileMatch = link.match(/\/file\/d\/([^/]+)\//);
+    const id = fileMatch?.[1];
+    return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400` : "https://via.placeholder.com/300x200?text=No+Image";
+}
 
-// function loadFeedbackSection() {
-//     fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Feedback")
-//         .then(res => res.json())
-//         .then(data => {
-//             const container = document.getElementById("feedbackContainer");
-//             container.innerHTML = "";
+function loadFeedbackSection() {
+    fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Feedback")
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById("feedbackContainer");
+            container.innerHTML = "";
 
-//             data.forEach(item => {
-//                 const imgSrc = convertDriveLinkToImage(item["Link feedback"]);
-//                 const name = item["Tên giáo viên"] || "Ẩn danh";
-//                 const role = item["Vai trò"] || "";
-//                 const text = item["Nội dung feedback"] || "";
+            if (!data || data.length === 0) {
+                container.innerHTML = `<div class="swiper-slide"><p class="section-5__text-center">Không có feedback nào.</p></div>`;
+                return;
+            }
 
-//                 container.innerHTML += `
-//                     <div class="col-md-4">
-//                         <div class="section-5__card p-4 h-100">
-//                             <p class="section-5__text">“${text}”</p>
-//                             <div class="d-flex align-items-center mt-3">
-//                                 <img src="${imgSrc}" class="section-5__avatar me-3" alt="avatar" width="60" height="60" loading="lazy">
-//                                 <div>
-//                                     <strong class="section-5__name">${name}</strong><br>
-//                                     <span class="text-muted">${role}</span>
-//                                 </div>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 `;
-//             });
-//         })
-//         .catch(err => {
-//             document.getElementById("feedbackContainer").innerHTML =
-//                 `<p class="text-danger text-center">Không thể tải feedback.</p>`;
-//             console.error(err);
-//         });
-// }
-// function convertDriveLinkToImage(link) {
-//     if (!link) return "https://via.placeholder.com/80?text=No+Image";
+            data.forEach(item => {
+                const imgSrc = convertDriveLinkToImage(item["Link feedback"]);
+                const teacher = item["Tên giáo viên"] || "Không rõ";
+                const role = item["Vai trò"] || "Không rõ";
+                const content = item["Nội dung feedback"] || "Không có nội dung";
 
-//     // Ưu tiên link dạng file/d/ID/view
-//     let match = link.match(/\/file\/d\/([^/]+)\//);
-//     if (match && match[1]) {
-//         return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-//     }
+                container.innerHTML += `
+            <div class="swiper-slide">
+              <div class="section-5__card">
+                <img src="${imgSrc}" class="section-5__feedback-img" alt="Feedback image" loading="lazy">
+                <div class="section-5__brand-box">
+                  <div class="section-5__logo">
+                    <img src="./assets/images/logo1.svg" alt="Logo Edu Mentor" class="section-5__logo-img">
+                  </div>
+                  <div class="section-5__brand">Edu Mentor</div>
+                  <div class="section-5__title">Feedback từ giáo viên</div>
+                  <ul class="section-5__features">
+                    <li><strong>Tên:</strong> ${teacher}</li>
+                    <li><strong>Vai trò:</strong> ${role}</li>
+                    <li><strong>Nội dung:</strong> ${content}</li>
+                  </ul>
+                  <div class="section-5__quote">"Cảm ơn vì đã tin tưởng dịch vụ của chúng tôi!"</div>
+                  <div class="section-5__footer-link">www.giasutop.vn</div>
+                </div>
+              </div>
+            </div>
+          `;
+            });
 
-//     // Hoặc link dạng download?id=ID
-//     match = link.match(/id=([^&]+)/);
-//     if (match && match[1]) {
-//         return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-//     }
+            new Swiper(".feedback-swiper", {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+            });
+        })
+        .catch(err => {
+            console.error("Fetch error:", err);
+            document.getElementById("feedbackContainer").innerHTML = `
+          <div class="swiper-slide"><p class="section-5__text-center">Không thể tải feedback: ${err.message}</p></div>
+        `;
+        });
+}
 
-//     return "https://via.placeholder.com/80?text=No+Image";
-// }
+document.addEventListener("DOMContentLoaded", loadFeedbackSection);

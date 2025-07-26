@@ -63,96 +63,17 @@
 
 
     <!-- Swiper Section -->
-    <section class="section-5">
-        <div class="section-5__swiper">
-            <h2 class="section-5__heading">PHẢN HỒI TỪ KHÁCH HÀNG</h2>
-            <div class="swiper feedback-swiper">
-                <div class="swiper-wrapper" id="feedbackContainer">
-                    <div class="swiper-slide section-5__text-center">Đang tải feedback...</div>
-                </div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-    <!-- Feedback Script -->
-    <script>
-        function convertDriveLinkToImage(link) {
-            if (!link) return "https://via.placeholder.com/300x200?text=No+Image";
-            const fileMatch = link.match(/\/file\/d\/([^/]+)\//);
-            const id = fileMatch?.[1];
-            return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400` : "https://via.placeholder.com/300x200?text=No+Image";
-        }
 
-        function loadFeedbackSection() {
-            fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Feedback")
-                .then(res => res.json())
-                .then(data => {
-                    const container = document.getElementById("feedbackContainer");
-                    container.innerHTML = "";
-
-                    if (!data || data.length === 0) {
-                        container.innerHTML = `<div class="swiper-slide"><p class="section-5__text-center">Không có feedback nào.</p></div>`;
-                        return;
-                    }
-
-                    data.forEach(item => {
-                        const imgSrc = convertDriveLinkToImage(item["Link feedback"]);
-                        const teacher = item["Tên giáo viên"] || "Không rõ";
-                        const role = item["Vai trò"] || "Không rõ";
-                        const content = item["Nội dung feedback"] || "Không có nội dung";
-
-                        container.innerHTML += `
-            <div class="swiper-slide">
-              <div class="section-5__card">
-                <img src="${imgSrc}" class="section-5__feedback-img" alt="Feedback image" loading="lazy">
-                <div class="section-5__brand-box">
-                  <div class="section-5__logo">
-                    <img src="./assets/images/logo1.svg" alt="Logo Gia sư" class="section-5__logo-img">
-                  </div>
-                  <div class="section-5__brand">Gia sư TOP</div>
-                  <div class="section-5__title">Feedback từ giáo viên</div>
-                  <ul class="section-5__features">
-                    <li><strong>Tên:</strong> ${teacher}</li>
-                    <li><strong>Vai trò:</strong> ${role}</li>
-                    <li><strong>Nội dung:</strong> ${content}</li>
-                  </ul>
-                  <div class="section-5__quote">"Cảm ơn vì đã tin tưởng dịch vụ của chúng tôi!"</div>
-                  <div class="section-5__footer-link">www.giasutop.vn</div>
-                </div>
-              </div>
-            </div>
-          `;
-                    });
-
-                    new Swiper(".feedback-swiper", {
-                        slidesPerView: 1,
-                        spaceBetween: 30,
-                        navigation: {
-                            nextEl: ".swiper-button-next",
-                            prevEl: ".swiper-button-prev",
-                        },
-                        loop: true,
-                        autoplay: {
-                            delay: 5000,
-                            disableOnInteraction: false,
-                        },
-                    });
-                })
-                .catch(err => {
-                    console.error("Fetch error:", err);
-                    document.getElementById("feedbackContainer").innerHTML = `
-          <div class="swiper-slide"><p class="section-5__text-center">Không thể tải feedback: ${err.message}</p></div>
-        `;
-                });
-        }
-
-        document.addEventListener("DOMContentLoaded", loadFeedbackSection);
-    </script>
+    <!-- Section 4: Danh sách các lớp -->
+    <div id="section-5" class="container py-4"></div>
+    <div class="section-divider with-icon">
+        <span class="divider-icon"></span>
+    </div>
 
 
 
