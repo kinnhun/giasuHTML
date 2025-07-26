@@ -18,10 +18,11 @@ body {
 .section-divider {
     height: 3px;
     max-width: 640px;
-    margin: 4rem auto;
+    margin: -2rem auto;
     background: linear-gradient(to right, transparent, #e74c3c, transparent);
     border-radius: 3px;
     opacity: 1;
+    margin-bottom: -5rem;
 }
 
 
@@ -1488,24 +1489,30 @@ body {
 .swiper-button-next {
     position: absolute;
     top: 50%;
+    transform: translateY(-50%);
     z-index: 10;
-    width: 44px;
-    height: 44px;
-    margin-top: -22px;
-    cursor: pointer;
-    background: #e74c3c;
-    color: white;
-    text-align: center;
-    line-height: 44px;
-    font-size: 24px;
+    width: 48px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #e74c3c;
     border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
     user-select: none;
-    transition: background-color 0.3s ease;
+    backdrop-filter: blur(4px);
 }
 
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
-    background-color: #c0392b;
+    background-color: #e74c3c;
+    color: #fff;
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .swiper-button-prev {
