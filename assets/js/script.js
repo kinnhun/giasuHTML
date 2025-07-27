@@ -21,8 +21,14 @@ function loadComponent(id, path) {
 
 
 loadComponent("header", "components/header.html");
-loadComponent("section-1", "components/section-1.html");
-loadComponent("section-2", "components/section-2.html");
+loadComponent("section-1", "components/section-1.html").then(() => {
+    loadCtaContainer();
+});
+
+loadComponent("section-2", "components/section-2.html").then(() => {
+    renderSection2MessengerButton();
+    renderSection2NoiQuyNhanLop();
+});
 loadComponent("section-3", "components/section-3.html");
 loadComponent("section-4", "components/section-4.html").then(() => {
     loadClassListFromSheet();
@@ -306,17 +312,15 @@ function loadFeedbackSection() {
                 <img src="${imgSrc}" class="section-5__feedback-img" alt="Feedback image" loading="lazy">
                 <div class="section-5__brand-box">
                   <div class="section-5__logo">
-                    <img src="./assets/images/logo1.svg" alt="Logo Edu Mentor" class="section-5__logo-img">
                   </div>
                   <div class="section-5__brand">Edu Mentor</div>
                   <div class="section-5__title">Feedback từ giáo viên</div>
                   <ul class="section-5__features">
-                    <li><strong>Tên:</strong> ${teacher}</li>
-                    <li><strong>Vai trò:</strong> ${role}</li>
-                    <li><strong>Nội dung:</strong> ${content}</li>
+                    <li>(${teacher})</li>
+                    <li>${content}</li>
                   </ul>
                   <div class="section-5__quote">"Cảm ơn vì đã tin tưởng dịch vụ của chúng tôi!"</div>
-                  <div class="section-5__footer-link">www.giasutop.vn</div>
+                  <div class="section-5__footer-link">www.......</div>
                 </div>
               </div>
             </div>
@@ -332,7 +336,7 @@ function loadFeedbackSection() {
                 },
                 loop: true,
                 autoplay: {
-                    delay: 5000,
+                    delay: 9000,
                     disableOnInteraction: false,
                 },
             });
@@ -346,3 +350,107 @@ function loadFeedbackSection() {
 }
 
 document.addEventListener("DOMContentLoaded", loadFeedbackSection);
+
+
+
+
+
+
+
+
+
+
+function loadCtaContainer() {
+    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Link%20nh%E1%BA%ADn%20l%E1%BB%9Bp";
+
+    fetch(sheetURL)
+        .then(res => res.json())
+        .then(data => {
+            const firstLink = data[0]?.["Link nhận lớp"]?.trim();
+            const container = document.getElementById("ctaContainer");
+
+            if (!firstLink) {
+                console.warn("Không tìm thấy link hợp lệ từ Sheet.");
+                return;
+            }
+
+            if (!container) {
+                console.warn("Không tìm thấy phần tử có id='ctaContainer'.");
+                return;
+            }
+
+            container.innerHTML = `
+        <a href="${firstLink}" target="_blank"
+           class="btn btn-edumentor section-1__cta uniform-width cta-shake">
+          INBOX FACEBOOK ĐỂ NHẬN LỚP
+        </a>
+      `;
+        })
+        .catch(err => {
+            console.error("Lỗi khi tải link nhận lớp:", err);
+        });
+}
+
+
+
+
+function renderSection2MessengerButton() {
+    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Nh%E1%BA%AFn%20tin%20v%E1%BB%9Bi%20trung%20t%C3%A2m";
+
+    fetch(sheetURL)
+        .then(res => res.json())
+        .then(data => {
+            const link = data[0]?.["Link"]?.trim();
+            const container = document.getElementById("section-2nhantinvoitrungtam");
+
+            if (link && container) {
+                container.innerHTML = `
+          <div class="button-container">
+            <a href="${link}" target="_blank" class="btn-edumentor" style="text-decoration: none;">
+              NHẮN TIN VỚI TRUNG TÂM NGAY!
+            </a>
+          </div>
+        `;
+            } else {
+                console.warn("Không tìm thấy link hoặc container để hiển thị.");
+            }
+        })
+        .catch(err => {
+            console.error("Lỗi khi fetch link Nhắn tin với trung tâm:", err);
+        });
+}
+
+
+
+
+function renderSection2NoiQuyNhanLop() {
+    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/N%E1%BB%99i%20quy%20nh%E1%BA%ADn%20l%E1%BB%9Bp";
+    const container = document.getElementById("section-2-noiquynhanlop");
+
+    fetch(sheetURL)
+        .then(res => res.json())
+        .then(data => {
+            const link = data[0]?.["Link"]?.trim();
+
+            if (link && container) {
+                container.innerHTML = `
+                 <div class="text-center mt-4">
+                    <a href="${link}" class="btn btn-edumentor section-2__cta px-4 py-2">
+                        ĐỌC NỘI QUY NHẬN LỚP TẠI ĐÂY
+                    </a>
+                </div>
+
+                  
+                `;
+            } else {
+                container.innerHTML = `<p class="text-danger">Không tìm thấy nội quy hoặc link nhắn tin.</p>`;
+                console.warn("Không tìm thấy link hoặc container.");
+            }
+        })
+        .catch(err => {
+            console.error("Lỗi khi fetch nội quy nhận lớp:", err);
+            if (container) {
+                container.innerHTML = `<p class="text-danger">Lỗi khi tải nội quy. Vui lòng thử lại sau.</p>`;
+            }
+        });
+}

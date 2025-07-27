@@ -315,6 +315,30 @@ body {
     /* đảm bảo căn giữa nội dung */
 }
 
+@keyframes subtle-shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-3px);
+    }
+
+    50% {
+        transform: translateX(3px);
+    }
+
+    75% {
+        transform: translateX(-2px);
+    }
+}
+
+.cta-shake {
+    animation: subtle-shake 1s ease-in-out infinite;
+}
+
 
 @keyframes pulse {
     0% {
@@ -1441,7 +1465,7 @@ body {
 }
 
 .section-5__features li::before {
-    content: "✔️";
+    content: "❁";
     margin-right: 10px;
     color: #e74c3c;
 }
