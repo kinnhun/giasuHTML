@@ -116,15 +116,12 @@ body {
     border-radius: 1rem;
     border: none;
     border-bottom: 6px solid #e74c3c;
-    /* Viền dưới màu đỏ nổi bật */
     transition: transform 0.3s ease;
 }
 
 .section-1__image:hover {
     transform: scale(1.03);
-    /* Hiệu ứng phóng nhẹ khi hover */
     border-bottom-color: #e74c3c;
-    /* Giữ nguyên màu khi hover */
 }
 
 
@@ -133,9 +130,7 @@ body {
 .section-1__heading {
     display: inline-block;
     background-color: #fff3e0;
-    /* nền kem nhẹ */
     border-radius: 999px;
-    /* bo tròn hoàn toàn */
     padding: 0.6rem 1.8rem;
     font-size: 2rem;
     font-weight: bold;
@@ -261,9 +256,7 @@ body {
     padding: 0.5rem 1.6rem;
     border: none;
     border-radius: 999px;
-    /* bo tròn capsule */
     background-color: #e53935;
-    /* đỏ đúng như ảnh */
     color: #fff;
     letter-spacing: 0.5px;
     text-align: center;
@@ -271,14 +264,12 @@ body {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Hover và hiệu ứng tương tác */
 .section-1__cta:hover {
     background-color: #c62828;
     transform: scale(1.03);
     color: #fff;
 }
 
-/* Nút CTA tổng thể */
 .section-1__cta {
     display: inline-block;
     font-size: 0.9rem;
@@ -287,9 +278,7 @@ body {
     padding: 0.5rem 1.6rem;
     border: none;
     border-radius: 999px;
-    /* bo tròn capsule */
     background-color: #e53935;
-    /* đỏ đúng như ảnh */
     color: #fff;
     letter-spacing: 0.5px;
     text-align: center;
@@ -297,7 +286,6 @@ body {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Hover và hiệu ứng tương tác */
 .section-1__cta:hover {
     background-color: #c62828;
     transform: scale(1.03);
@@ -312,7 +300,6 @@ body {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    /* đảm bảo căn giữa nội dung */
 }
 
 @keyframes subtle-shake {
@@ -398,9 +385,7 @@ body {
     animation: bounce 0.6s ease;
 }
 
-/* ========================= */
-/* GIAO DIỆN MOBILE (<=767px) */
-/* ========================= */
+
 @media (max-width: 767px) {
 
     .section-1 {
@@ -481,7 +466,6 @@ body {
         max-width: 100%;
     }
 
-    /* Optional: căn giữa quote + heading nếu dùng grid hoặc flex */
     .section-1__quote-box,
     .section-1__heading,
     .section-1__cta {
@@ -556,37 +540,28 @@ body {
 .section-2__steps-box {
     background-color: white;
     border: 0.125rem solid #eee;
-    /* 2px */
     border-radius: 0.75rem;
-    /* 12px */
     padding: 1.5rem;
-    /* 24px */
     max-width: 56.25rem;
-    /* 900px */
     margin: 0 auto;
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
-    /* 0 4px 12px */
 }
 
-/* PHẦN TRÊN */
 .step-list {
     display: flex;
     justify-content: space-between;
     align-items: stretch;
     flex-wrap: wrap;
     margin-bottom: 1.5rem;
-    /* 24px */
 }
 
 .step-item {
     flex: 1;
     padding: 0 1rem;
-    /* 16px */
 }
 
 .middle-step {
     border-left: 0.0625rem solid #ddd;
-    /* 1px */
     border-right: 0.0625rem solid #ddd;
 }
 
@@ -595,7 +570,6 @@ body {
     color: #001f4d;
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
-    /* 8px */
 }
 
 .step-desc {
@@ -605,7 +579,6 @@ body {
     color: #333;
 }
 
-/* PHẦN DƯỚI */
 .button-container {
     text-align: center;
 }
@@ -615,56 +588,43 @@ body {
     color: white;
     font-weight: 700;
     padding: 0.625rem 1.25rem;
-    /* 10px 20px */
     border-radius: 2.5rem;
-    /* 40px */
     border: none;
     font-size: 0.9rem;
     box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-    /* 0 4px 8px */
     transition: all 0.3s ease;
 }
 
 .btn-edumentor:hover {
     background-color: #c0392b;
     transform: translateY(-0.125rem);
-    /* -2px */
 }
 
 .section-2__steps-box {
     background-color: white;
     border: 0.125rem solid #101010;
-    /* 2px */
     border-radius: 1.75rem;
-    /* 12px */
     padding: 0.65rem;
-    /* 24px */
     max-width: 56.25rem;
-    /* 900px */
     margin: 0 auto;
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
-    /* 0 4px 12px */
 }
 
-/* PHẦN TRÊN */
 .step-list {
     display: flex;
     justify-content: space-between;
     align-items: stretch;
     flex-wrap: wrap;
     margin-bottom: 1.5rem;
-    /* 24px */
 }
 
 .step-item {
     flex: 1;
     padding: 0 1rem;
-    /* 16px */
 }
 
 .middle-step {
     border-left: 0.0625rem solid #101010;
-    /* 1px */
     border-right: 0.0625rem solid #101010;
 }
 
@@ -673,7 +633,6 @@ body {
     color: #001f4d;
     font-size: 2rem;
     margin-bottom: 0.5rem;
-    /* 8px */
 }
 
 .step-desc {
@@ -683,7 +642,6 @@ body {
     color: #333;
 }
 
-/* PHẦN DƯỚI */
 .button-container {
     text-align: center;
 }
@@ -693,21 +651,16 @@ body {
     color: white;
     font-weight: 600;
     padding: 0.3rem 0.6rem;
-    /* ~4.8px 9.6px */
     border-radius: 1rem;
-    /* ~16px */
     border: none;
     font-size: 0.75rem;
-    /* ~12px */
     box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
-    /* ~1.6px 3.2px */
     transition: all 0.3s ease;
 }
 
 .btn-edumentor:hover {
     background-color: #c0392b;
     transform: translateY(-0.08rem);
-    /* ~1.28px */
 }
 
 
@@ -727,7 +680,6 @@ body {
     border-radius: 1rem;
     border: none;
     border-bottom: 6px solid #e74c3c;
-    /* Gạch dưới đỏ nổi bật */
     transition: transform 0.3s ease;
 }
 
@@ -735,7 +687,6 @@ body {
 .img-fluid:hover {
     transform: scale(1.03);
     border-bottom-color: #e74c3c;
-    /* Giữ màu đỏ khi hover */
 }
 
 .img-fluid {
@@ -743,9 +694,7 @@ body {
     max-width: 111% !important
 }
 
-/* ============================== */
-/* RESPONSIVE GIAO DIỆN MOBILE 📱 */
-/* ============================== */
+
 @media (max-width: 767px) {
 
     .section-2__headline {
@@ -777,7 +726,6 @@ body {
     .step-item {
         padding: 0;
         border: none !important;
-        /* bỏ viền trái/phải giữa các bước */
     }
 
     .middle-step {
@@ -838,12 +786,10 @@ body {
 .section-3__box {
     background-color: white;
     border: none;
-    /* Xoá border viền toàn bộ */
     border-radius: 1rem;
     padding: 2rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
     border-bottom: 6px solid #e74c3c;
-    /* Gạch dưới đỏ nổi bật */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -851,7 +797,6 @@ body {
     transform: translateY(-5px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     border-bottom-color: #e74c3c;
-    /* Giữ màu đỏ */
 }
 
 
@@ -950,7 +895,6 @@ body {
         font-size: 1rem;
     }
 
-    /* Flex sửa lại cho dọc */
     .section-3 .row {
         flex-direction: column;
     }
@@ -1005,7 +949,6 @@ body {
         font-size: 1rem;
     }
 
-    /* Flex sửa lại cho dọc */
     .section-3 .row {
         flex-direction: column;
     }
@@ -1060,7 +1003,6 @@ body {
         font-size: 1rem;
     }
 
-    /* Flex sửa lại cho dọc */
     .section-3 .row {
         flex-direction: column;
     }
@@ -1164,7 +1106,6 @@ body {
 /* ====================================================================== ==== */
 .footer {
     background-color: #f8f9fa;
-    /* Nền sáng thay vì #2c3e50 */
     color: #2c3e50;
     padding-top: 3rem;
     padding-bottom: 2rem;
@@ -1181,7 +1122,6 @@ body {
 
 .footer__link-list a:hover {
     color: #e74c3c;
-    /* Hover đỏ EduMentor */
 }
 
 .footer__social {
@@ -1245,7 +1185,6 @@ body {
 
 
 
-/* Chỉ hiện khi hover */
 .floating-social-buttons:hover .contact-popup {
     display: inline-block;
 }
@@ -1272,7 +1211,6 @@ body {
     object-fit: contain;
 }
 
-/* Optional animation */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -1508,7 +1446,6 @@ body {
     padding: 2rem 0;
 }
 
-/* Navigation arrows */
 .swiper-button-prev,
 .swiper-button-next {
     position: absolute;
@@ -1547,7 +1484,6 @@ body {
     right: 10px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .section-5__card {
         flex-direction: column;

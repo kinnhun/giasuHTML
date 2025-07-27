@@ -167,7 +167,7 @@ function applyFilters(resetPage = true) {
     const keyword = document.getElementById("classSearchInput").value.replace(/\s+/g, ' ').trim().toLowerCase();
 
     const filtered = allClassData.filter(item => {
-        const rawText = `${item["Mã môn"]} ${item["Môn"]} ${item["Khu vực"]} ${item["Lịch học"]} ${item["Học phí"]} ${item["Yêu cầu"]}`;
+        const rawText = `${item["Mã môn"]} ${item["Môn"]} ${item["Khu vực"]} ${item["Lịch học"]} ${item["Học phí"]} ${item["Yêu cầu"]}  ${item["Hình thức học"]}`.toLowerCase();
         const text = rawText.replace(/\s+/g, ' ').trim().toLowerCase();
 
         return text.includes(keyword);
@@ -185,13 +185,54 @@ function applyFilters(resetPage = true) {
 }
 
 
+// function renderClassCards(data) {
+//     const container = document.getElementById("classListContainer");
+//     if (!container) return;
+
+//     container.innerHTML = "";
+
+//     if (data.length === 0) {
+//         container.innerHTML = `<p class="text-center text-muted">Không tìm thấy lớp nào phù hợp.</p>`;
+//         return;
+//     }
+
+//     const startIndex = (currentPage - 1) * itemsPerPage;
+//     const endIndex = startIndex + itemsPerPage;
+//     const currentItems = data.slice(startIndex, endIndex);
+
+//     currentItems.forEach(item => {
+//         if (!item["Môn"] || !item["Khu vực"]) return;
+
+//         const card = document.createElement("div");
+//         card.className = "col-lg-4 col-md-6";
+//         card.innerHTML = `
+//         <div class="section-4__card">
+//             <div class="d-flex justify-content-between align-items-center mb-2">
+//                 <h5 class="section-4__subject mb-0">${item["Môn"].trim()}</h5>
+//                 <span class="badge bg-secondary">Mã: ${item["Mã môn"]?.trim() || "Không có"}</span>
+//             </div>
+//             <ul class="section-4__info list-unstyled mb-3">
+//                 <li><strong>Khu vực:</strong> ${item["Khu vực"].trim()}</li>
+//                 <li><strong>Lịch học:</strong> ${item["Lịch học"]?.trim() || "Đang cập nhật"}</li>
+//                 <li><strong>Học phí:</strong> ${item["Học phí"]?.trim() || "Liên hệ"}</li>
+//                 <li><strong>Yêu cầu:</strong> ${item["Yêu cầu"]?.trim() || "Không yêu cầu cụ thể"}</li>
+//             </ul>
+//             <button class="btn-edumentor w-100">Nhận lớp ngay</button>
+//         </div>
+//         `;
+//         container.appendChild(card);
+//     });
+// }
+
+
+
 function renderClassCards(data) {
     const container = document.getElementById("classListContainer");
     if (!container) return;
 
     container.innerHTML = "";
 
-    if (data.length === 0) {
+    if (!Array.isArray(data) || data.length === 0) {
         container.innerHTML = `<p class="text-center text-muted">Không tìm thấy lớp nào phù hợp.</p>`;
         return;
     }
@@ -201,28 +242,54 @@ function renderClassCards(data) {
     const currentItems = data.slice(startIndex, endIndex);
 
     currentItems.forEach(item => {
-        if (!item["Môn"] || !item["Khu vực"]) return;
+        const mon = item["Môn"]?.trim();
+        const maMon = item["Mã môn"]?.trim() || "Không có";
+        const hinhThucRaw = item["Hình thức học"]?.trim() || "Không rõ";
+        const khuVuc = item["Khu vực"]?.trim();
+        const lichHoc = item["Lịch học"]?.trim() || "Đang cập nhật";
+        const hocPhi = item["Học phí"]?.trim() || "Liên hệ";
+        const yeuCau = item["Yêu cầu"]?.trim() || "Không yêu cầu cụ thể";
+        const linkNhanLop = item["Link nhận lớp"]?.trim();
+
+        if (!mon || !khuVuc) return;
+
+        // Badge màu cho hình thức học
+        const hinhThuc = hinhThucRaw.toLowerCase();
+        let hinhThucHTML = "";
+        if (hinhThuc === "online") {
+            hinhThucHTML = `<span class="badge bg-success">${hinhThucRaw}</span>`;
+        } else if (hinhThuc === "offline") {
+            hinhThucHTML = `<span class="badge bg-warning text-dark">${hinhThucRaw}</span>`;
+        } else {
+            hinhThucHTML = `<span class="badge bg-secondary">${hinhThucRaw}</span>`;
+        }
 
         const card = document.createElement("div");
         card.className = "col-lg-4 col-md-6";
         card.innerHTML = `
-        <div class="section-4__card">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="section-4__subject mb-0">${item["Môn"].trim()}</h5>
-                <span class="badge bg-secondary">Mã: ${item["Mã môn"]?.trim() || "Không có"}</span>
+        <div class="section-4__card h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="section-4__subject mb-0">${mon}</h5>
+                    <span class="badge bg-secondary">Mã: ${maMon}</span>
+                </div>
+                <ul class="section-4__info list-unstyled mb-3">
+                    <li><strong>Hình thức học:</strong> ${hinhThucHTML}</li>
+                    <li><strong>Khu vực:</strong> ${khuVuc}</li>
+                    <li><strong>Lịch học:</strong> ${lichHoc}</li>
+                    <li><strong>Học phí:</strong> ${hocPhi}</li>
+                    <li><strong>Yêu cầu:</strong> ${yeuCau}</li>
+                </ul>
             </div>
-            <ul class="section-4__info list-unstyled mb-3">
-                <li><strong>Khu vực:</strong> ${item["Khu vực"].trim()}</li>
-                <li><strong>Lịch học:</strong> ${item["Lịch học"]?.trim() || "Đang cập nhật"}</li>
-                <li><strong>Học phí:</strong> ${item["Học phí"]?.trim() || "Liên hệ"}</li>
-                <li><strong>Yêu cầu:</strong> ${item["Yêu cầu"]?.trim() || "Không yêu cầu cụ thể"}</li>
-            </ul>
-            <button class="btn-edumentor w-100">Nhận lớp ngay</button>
+            <button class="btn-edumentor w-100 mt-auto" ${linkNhanLop ? `onclick="window.open('${linkNhanLop}', '_blank')"` : "disabled"}>
+                Nhận lớp ngay
+            </button>
         </div>
         `;
         container.appendChild(card);
     });
 }
+
 
 function renderPagination(data) {
     const paginationContainerId = "paginationControls";
