@@ -20,7 +20,10 @@ function loadComponent(id, path) {
 }
 
 
-loadComponent("header", "components/header.html");
+loadComponent("header", "components/header.html").then(() => {
+    renderJoinZaloButton();
+    navbarActive();
+});
 loadComponent("section-1", "components/section-1.html").then(() => {
     loadCtaContainer();
 });
@@ -387,7 +390,6 @@ function loadFeedbackSection() {
                     <li>${content}</li>
                   </ul>
                   <div class="section-5__quote">"Cảm ơn vì đã tin tưởng dịch vụ của chúng tôi!"</div>
-                  <div class="section-5__footer-link">www.......</div>
                 </div>
               </div>
             </div>
@@ -521,3 +523,64 @@ function renderSection2NoiQuyNhanLop() {
             }
         });
 }
+
+
+
+function renderJoinZaloButton() {
+    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Inbox%20ngay";
+
+    fetch(sheetURL)
+        .then(res => res.json())
+        .then(data => {
+            const link = data[0]?.["Link"]?.trim();
+            const container = document.getElementById("thamgianhomzalo");
+
+            if (link && container) {
+                container.innerHTML = `
+          <a href="${link}" target="_blank" class="header-inbox-btn" style="display: inline-flex; align-items: center; gap: 8px; width: 100%;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/512px-Icon_of_Zalo.svg.png"
+                 alt="Zalo icon" width="24" height="24" loading="lazy" style="vertical-align: middle;" />
+            <span>
+              THAM GIA NHÓM ZALO NGAY <br>ĐỂ NHẬN THÔNG BÁO MỚI NHẤT
+            </span>
+          </a>
+        `;
+            } else {
+                console.warn("Không tìm thấy link hoặc phần tử #thamgianhomzalo.");
+            }
+        })
+        .catch(err => {
+            console.error("Lỗi khi fetch link Tham gia nhóm Zalo:", err);
+        });
+}
+
+
+
+function navbarActive() {
+    document.addEventListener("DOMContentLoaded", () => {
+        const links = document.querySelectorAll(".navbar-nav .nav-link");
+
+        function setActiveLinkFromHash() {
+            const currentHash = window.location.hash;
+
+            links.forEach(link => {
+                if (link.getAttribute("href") === currentHash) {
+                    link.classList.add("active");
+                } else {
+                    link.classList.remove("active");
+                }
+            });
+        }
+
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                // Delay để browser xử lý cuộn trước
+                setTimeout(setActiveLinkFromHash, 100);
+            });
+        });
+
+        window.addEventListener("load", setActiveLinkFromHash);
+        window.addEventListener("hashchange", setActiveLinkFromHash);
+    });
+}
+

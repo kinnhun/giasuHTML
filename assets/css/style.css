@@ -1514,3 +1514,86 @@ body {
 .section-5__logo-img:hover {
     transform: scale(1.05);
 }
+
+
+
+
+
+
+
+
+.header-inbox-btn {
+    display: inline-block;
+    background-color: #e74c3c;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 0.75rem 1.6rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+    transition: transform 0.25s ease, background-color 0.3s ease;
+    animation: header-pulse 1.6s ease-in-out infinite;
+    white-space: normal;
+    /* ✅ cho phép xuống dòng khi có <br> */
+    max-width: 360px;
+    margin: 0 auto;
+    margin-left: 1.7rem;
+
+}
+
+.header-inbox-btn:hover {
+    background-color: #c62828;
+    transform: scale(1.05);
+    color: #fff;
+}
+
+/* Pulse animation */
+@keyframes header-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.06);
+    }
+}
+
+
+
+
+@media (max-width: 767px) {
+    .section-1__image {
+        width: 100% !important;
+        border-radius: 0.75rem;
+        margin-top: 5rem;
+    }
+
+    .section-3 {
+        padding-top: 7rem !important;
+    }
+
+    .section-4 {
+        padding-top: 7rem !important;
+    }
+
+    .section-5 {
+        padding-top: 9rem !important;
+    }
+
+    .section-5__swiper {
+        max-width: 100%;
+        padding: 0;
+
+    }
+}
+
+.nav-link.active {
+    color: #c62828 !important;
+    border-bottom: 2px solid #c62828;
+}
