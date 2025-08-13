@@ -386,7 +386,7 @@ function loadFeedbackSection() {
                   <div class="section-5__brand">Edu Mentor</div>
                   <div class="section-5__title">Feedback từ giáo viên</div>
                   <ul class="section-5__features">
-                    <li>(${teacher})</li>
+                    <li>${teacher}</li>
                     <li>${content}</li>
                   </ul>
                   <div class="section-5__quote">"Cảm ơn vì đã tin tưởng dịch vụ của chúng tôi!"</div>
