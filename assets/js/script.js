@@ -144,8 +144,6 @@ window.addEventListener('load', () => {
 
 
 
-
-
 let allClassData = [];
 let currentPage = 1;
 const itemsPerPage = 6;
@@ -157,6 +155,10 @@ function loadClassListFromSheet() {
         .then(res => res.json())
         .then(data => {
             allClassData = data;
+
+            // Cập nhật danh sách môn học vào select mỗi lần load (giữ lựa chọn hiện tại nếu có)
+            populateSubjectOptions(allClassData);
+
             applyFilters();
         })
         .catch(err => {
@@ -166,14 +168,59 @@ function loadClassListFromSheet() {
         });
 }
 
+/** Tạo options môn học duy nhất từ dữ liệu */
+function populateSubjectOptions(data) {
+    const sel = document.getElementById("subjectFilter");
+    if (!sel) return;
+
+    // Lưu lại lựa chọn hiện tại (nếu người dùng đang chọn)
+    const prev = sel.value;
+
+    // Lấy danh sách môn duy nhất, loại giá trị rỗng
+    const subjects = Array.from(
+        new Set(
+            (data || [])
+              .map(i => (i["Môn"] || "").trim())
+              .filter(Boolean)
+        )
+    ).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+
+    // Render lại options
+    sel.innerHTML = `<option value="">Tất cả môn học</option>` +
+        subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+
+    // Khôi phục lựa chọn trước nếu còn tồn tại
+    if (subjects.includes(prev)) {
+        sel.value = prev;
+    }
+}
+
+/** Escape đơn giản để an toàn khi render text vào HTML */
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[m]));
+}
+
 function applyFilters(resetPage = true) {
-    const keyword = document.getElementById("classSearchInput").value.replace(/\s+/g, ' ').trim().toLowerCase();
+    const keyword = document.getElementById("classSearchInput")
+        .value.replace(/\s+/g, ' ').trim().toLowerCase();
+
+    const selectedSubject = (document.getElementById("subjectFilter")?.value || "").trim();
 
     const filtered = allClassData.filter(item => {
-        const rawText = `${item["Mã môn"]} ${item["Môn"]} ${item["Khu vực"]} ${item["Lịch học"]} ${item["Học phí"]} ${item["Yêu cầu"]}  ${item["Hình thức học"]}`.toLowerCase();
-        const text = rawText.replace(/\s+/g, ' ').trim().toLowerCase();
+        // Ghép text để tìm theo từ khóa
+        const rawText = `${item["Mã môn"]} ${item["Môn"]} ${item["Khu vực"]} ${item["Lịch học"]} ${item["Học phí"]} ${item["Yêu cầu"]} ${item["Hình thức học"]}`.toLowerCase();
+        const text = rawText.replace(/\s+/g, ' ').trim();
 
-        return text.includes(keyword);
+        // Điều kiện theo từ khóa
+        const matchKeyword = !keyword || text.includes(keyword);
+
+        // Điều kiện theo môn học (đúng tuyệt đối theo option đã populate)
+        const subject = (item["Môn"] || "").trim();
+        const matchSubject = !selectedSubject || subject === selectedSubject;
+
+        return matchKeyword && matchSubject;
     });
 
     if (resetPage) {
@@ -186,48 +233,6 @@ function applyFilters(resetPage = true) {
     renderClassCards(filtered);
     renderPagination(filtered);
 }
-
-
-// function renderClassCards(data) {
-//     const container = document.getElementById("classListContainer");
-//     if (!container) return;
-
-//     container.innerHTML = "";
-
-//     if (data.length === 0) {
-//         container.innerHTML = `<p class="text-center text-muted">Không tìm thấy lớp nào phù hợp.</p>`;
-//         return;
-//     }
-
-//     const startIndex = (currentPage - 1) * itemsPerPage;
-//     const endIndex = startIndex + itemsPerPage;
-//     const currentItems = data.slice(startIndex, endIndex);
-
-//     currentItems.forEach(item => {
-//         if (!item["Môn"] || !item["Khu vực"]) return;
-
-//         const card = document.createElement("div");
-//         card.className = "col-lg-4 col-md-6";
-//         card.innerHTML = `
-//         <div class="section-4__card">
-//             <div class="d-flex justify-content-between align-items-center mb-2">
-//                 <h5 class="section-4__subject mb-0">${item["Môn"].trim()}</h5>
-//                 <span class="badge bg-secondary">Mã: ${item["Mã môn"]?.trim() || "Không có"}</span>
-//             </div>
-//             <ul class="section-4__info list-unstyled mb-3">
-//                 <li><strong>Khu vực:</strong> ${item["Khu vực"].trim()}</li>
-//                 <li><strong>Lịch học:</strong> ${item["Lịch học"]?.trim() || "Đang cập nhật"}</li>
-//                 <li><strong>Học phí:</strong> ${item["Học phí"]?.trim() || "Liên hệ"}</li>
-//                 <li><strong>Yêu cầu:</strong> ${item["Yêu cầu"]?.trim() || "Không yêu cầu cụ thể"}</li>
-//             </ul>
-//             <button class="btn-edumentor w-100">Nhận lớp ngay</button>
-//         </div>
-//         `;
-//         container.appendChild(card);
-//     });
-// }
-
-
 
 function renderClassCards(data) {
     const container = document.getElementById("classListContainer");
@@ -260,11 +265,11 @@ function renderClassCards(data) {
         const hinhThuc = hinhThucRaw.toLowerCase();
         let hinhThucHTML = "";
         if (hinhThuc === "online") {
-            hinhThucHTML = `<span class="badge bg-success">${hinhThucRaw}</span>`;
+            hinhThucHTML = `<span class="badge bg-success">${escapeHtml(hinhThucRaw)}</span>`;
         } else if (hinhThuc === "offline") {
-            hinhThucHTML = `<span class="badge bg-warning text-dark">${hinhThucRaw}</span>`;
+            hinhThucHTML = `<span class="badge bg-warning text-dark">${escapeHtml(hinhThucRaw)}</span>`;
         } else {
-            hinhThucHTML = `<span class="badge bg-secondary">${hinhThucRaw}</span>`;
+            hinhThucHTML = `<span class="badge bg-secondary">${escapeHtml(hinhThucRaw)}</span>`;
         }
 
         const card = document.createElement("div");
@@ -273,26 +278,24 @@ function renderClassCards(data) {
         <div class="section-4__card h-100 d-flex flex-column justify-content-between">
             <div>
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="section-4__subject mb-0">${mon}</h5>
-                    <span class="badge bg-secondary">Mã: ${maMon}</span>
+                    <h5 class="section-4__subject mb-0">${escapeHtml(mon)}</h5>
+                    <span class="badge bg-secondary">Mã: ${escapeHtml(maMon)}</span>
                 </div>
                 <ul class="section-4__info list-unstyled mb-3">
                     <li><strong>Hình thức học:</strong> ${hinhThucHTML}</li>
-                    <li><strong>Khu vực:</strong> ${khuVuc}</li>
-                    <li><strong>Lịch học:</strong> ${lichHoc}</li>
-                    <li><strong>Học phí:</strong> ${hocPhi}</li>
-                    <li><strong>Yêu cầu:</strong> ${yeuCau}</li>
+                    <li><strong>Khu vực:</strong> ${escapeHtml(khuVuc)}</li>
+                    <li><strong>Lịch học:</strong> ${escapeHtml(lichHoc)}</li>
+                    <li><strong>Học phí:</strong> ${escapeHtml(hocPhi)}</li>
+                    <li><strong>Yêu cầu:</strong> ${escapeHtml(yeuCau)}</li>
                 </ul>
             </div>
             <button class="btn-edumentor w-100 mt-auto" ${linkNhanLop ? `onclick="window.open('${linkNhanLop}', '_blank')"` : "disabled"}>
                 Nhận lớp ngay
             </button>
-        </div>
-        `;
+        </div>`;
         container.appendChild(card);
     });
 }
-
 
 function renderPagination(data) {
     const paginationContainerId = "paginationControls";
@@ -308,7 +311,6 @@ function renderPagination(data) {
     paginationContainer.innerHTML = "";
 
     const totalPages = Math.ceil(data.length / itemsPerPage);
-
     if (totalPages <= 1) return;
 
     const createBtn = (text, page, isActive = false, disabled = false) => {
@@ -326,25 +328,22 @@ function renderPagination(data) {
                 const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
                 window.scrollTo({ top, behavior: "smooth" });
             }
-
         });
         return btn;
     };
 
     paginationContainer.appendChild(createBtn("«", currentPage - 1, false, currentPage === 1));
-
     for (let i = 1; i <= totalPages; i++) {
         paginationContainer.appendChild(createBtn(i, i, i === currentPage));
     }
-
     paginationContainer.appendChild(createBtn("»", currentPage + 1, false, currentPage === totalPages));
 }
 
-document.getElementById("classSearchInput").addEventListener("input", applyFilters);
+document.getElementById("classSearchInput").addEventListener("input", () => applyFilters());
+document.getElementById("subjectFilter")?.addEventListener("change", () => applyFilters());
 
 loadClassListFromSheet();
 setInterval(loadClassListFromSheet, 3 * 60 * 1000);
-
 
 
 
