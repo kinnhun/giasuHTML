@@ -168,31 +168,43 @@ function loadClassListFromSheet() {
         });
 }
 
-/** Tạo options môn học duy nhất từ dữ liệu */
 function populateSubjectOptions(data) {
-    const sel = document.getElementById("subjectFilter");
-    if (!sel) return;
+  const sel = document.getElementById("subjectFilter");
+  if (!sel) return;
 
-    // Lưu lại lựa chọn hiện tại (nếu người dùng đang chọn)
-    const prev = sel.value;
+  const subjects = Array.from(
+    new Set((data || []).map(i => (i["Môn"] || "").trim()).filter(Boolean))
+  ).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
 
-    // Lấy danh sách môn duy nhất, loại giá trị rỗng
-    const subjects = Array.from(
-        new Set(
-            (data || [])
-              .map(i => (i["Môn"] || "").trim())
-              .filter(Boolean)
-        )
-    ).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+  // render select
+  sel.innerHTML = `<option value="">Tất cả môn học</option>` +
+    subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
 
-    // Render lại options
-    sel.innerHTML = `<option value="">Tất cả môn học</option>` +
-        subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  // render grid
+  renderSubjectGrid(subjects);
+}
 
-    // Khôi phục lựa chọn trước nếu còn tồn tại
-    if (subjects.includes(prev)) {
-        sel.value = prev;
-    }
+
+function renderSubjectGrid(subjects) {
+  const container = document.getElementById("subjectTableContainer");
+  if (!container) return;
+
+  container.innerHTML = subjects.map(s => `
+    <div class="subject-cell" data-subject="${escapeHtml(s)}">${escapeHtml(s)}</div>
+  `).join('');
+
+  // gắn sự kiện click
+  container.querySelectorAll(".subject-cell").forEach(cell => {
+    cell.addEventListener("click", () => {
+      container.querySelectorAll(".subject-cell").forEach(c => c.classList.remove("active"));
+      cell.classList.add("active");
+
+      // đồng bộ với select + lọc
+      const sel = document.getElementById("subjectFilter");
+      if (sel) sel.value = cell.dataset.subject;
+      applyFilters();
+    });
+  });
 }
 
 /** Escape đơn giản để an toàn khi render text vào HTML */
@@ -583,43 +595,34 @@ function navbarActive() {
     });
 }
 
-function populateSubjectOptions(data) {
-  const sel = document.getElementById("subjectFilter");
-  const boxContainer = document.getElementById("subjectBoxContainer");
-  if (!sel || !boxContainer) return;
+function renderSubjectTable(subjects, cols = 4) {
+  const container = document.getElementById("subjectTableContainer");
+  if (!container) return;
 
-  // Lưu lại lựa chọn hiện tại
-  const prev = sel.value;
+  let html = '<table class="subject-table"><tbody>';
+  for (let i = 0; i < subjects.length; i += cols) {
+    const row = subjects.slice(i, i + cols);
+    html += "<tr>";
+    row.forEach(s => {
+      html += `<td data-subject="${escapeHtml(s)}">${escapeHtml(s)}</td>`;
+    });
+    if (row.length < cols) {
+      html += "<td></td>".repeat(cols - row.length); // điền ô trống
+    }
+    html += "</tr>";
+  }
+  html += "</tbody></table>";
+  container.innerHTML = html;
 
-  // Lấy danh sách môn duy nhất
-  const subjects = Array.from(
-    new Set(
-      (data || []).map(i => (i["Môn"] || "").trim()).filter(Boolean)
-    )
-  ).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+  // sự kiện click
+  container.querySelectorAll("td[data-subject]").forEach(cell => {
+    cell.addEventListener("click", () => {
+      container.querySelectorAll("td").forEach(c => c.classList.remove("active"));
+      cell.classList.add("active");
 
-  // Render lại options cho select
-  sel.innerHTML = `<option value="">Tất cả môn học</option>` +
-    subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-
-  if (subjects.includes(prev)) sel.value = prev;
-
-  // Render danh sách hộp môn
-  boxContainer.innerHTML = subjects.map(s => `
-    <div class="col-auto">
-      <div class="subject-box" data-subject="${escapeHtml(s)}">${escapeHtml(s)}</div>
-    </div>
-  `).join('');
-
-  // Gắn sự kiện click cho từng hộp
-  boxContainer.querySelectorAll(".subject-box").forEach(box => {
-    box.addEventListener("click", () => {
-      // Toggle active class
-      boxContainer.querySelectorAll(".subject-box").forEach(b => b.classList.remove("active"));
-      box.classList.add("active");
-
-      // Set giá trị vào select và apply filter
-      sel.value = box.dataset.subject;
+      // đồng bộ với select + lọc
+      const sel = document.getElementById("subjectFilter");
+      if (sel) sel.value = cell.dataset.subject;
       applyFilters();
     });
   });
