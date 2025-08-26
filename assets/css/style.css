@@ -1597,3 +1597,29 @@ body {
     color: #c62828 !important;
     border-bottom: 2px solid #c62828;
 }
+
+
+.subject-box {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
+  border: 1px solid #e74c3c;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #e74c3c;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.subject-box:hover {
+  background-color: #e74c3c;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.subject-box.active {
+  background-color: #e74c3c;
+  color: #fff;
+}

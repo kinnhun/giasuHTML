@@ -583,3 +583,44 @@ function navbarActive() {
     });
 }
 
+function populateSubjectOptions(data) {
+  const sel = document.getElementById("subjectFilter");
+  const boxContainer = document.getElementById("subjectBoxContainer");
+  if (!sel || !boxContainer) return;
+
+  // Lưu lại lựa chọn hiện tại
+  const prev = sel.value;
+
+  // Lấy danh sách môn duy nhất
+  const subjects = Array.from(
+    new Set(
+      (data || []).map(i => (i["Môn"] || "").trim()).filter(Boolean)
+    )
+  ).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+
+  // Render lại options cho select
+  sel.innerHTML = `<option value="">Tất cả môn học</option>` +
+    subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+
+  if (subjects.includes(prev)) sel.value = prev;
+
+  // Render danh sách hộp môn
+  boxContainer.innerHTML = subjects.map(s => `
+    <div class="col-auto">
+      <div class="subject-box" data-subject="${escapeHtml(s)}">${escapeHtml(s)}</div>
+    </div>
+  `).join('');
+
+  // Gắn sự kiện click cho từng hộp
+  boxContainer.querySelectorAll(".subject-box").forEach(box => {
+    box.addEventListener("click", () => {
+      // Toggle active class
+      boxContainer.querySelectorAll(".subject-box").forEach(b => b.classList.remove("active"));
+      box.classList.add("active");
+
+      // Set giá trị vào select và apply filter
+      sel.value = box.dataset.subject;
+      applyFilters();
+    });
+  });
+}
