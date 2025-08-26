@@ -34,7 +34,11 @@ loadComponent("section-2", "components/section-2.html").then(() => {
 });
 loadComponent("section-3", "components/section-3.html");
 loadComponent("section-4", "components/section-4.html").then(() => {
-    loadClassListFromSheet();
+  // Cập nhật lại dữ liệu mỗi 5 giây
+setInterval(() => {
+  loadClassListFromSheet();
+}, 5000);
+
 
     setInterval(() => {
         fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/L%E1%BB%9Bp%20m%E1%BB%9Bi")
@@ -399,7 +403,10 @@ function renderPagination(data) {
 document.getElementById("classSearchInput").addEventListener("input", () => applyFilters());
 document.getElementById("subjectFilter")?.addEventListener("change", () => applyFilters());
 
-loadClassListFromSheet();
+// Cập nhật lại dữ liệu mỗi 5 giây
+setInterval(() => {
+  loadClassListFromSheet();
+}, 50000);
 setInterval(loadClassListFromSheet, 3 * 60 * 1000);
 
 
