@@ -172,19 +172,64 @@ function populateSubjectOptions(data) {
   const sel = document.getElementById("subjectFilter");
   if (!sel) return;
 
-  const subjects = Array.from(
+  // gom môn học theo loại
+  const grouped = {};
+  (data || []).forEach(item => {
+    const loai = item["Loại"]?.trim() || "Khác";
+    const mon = (item["Môn"] || "").trim();
+    if (!mon) return;
+    if (!grouped[loai]) grouped[loai] = new Set();
+    grouped[loai].add(mon);
+  });
+
+  // render select (tất cả môn chung)
+  const allSubjects = Array.from(
     new Set((data || []).map(i => (i["Môn"] || "").trim()).filter(Boolean))
-  ).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+  ).sort((a, b) => a.localeCompare(b, "vi", { sensitivity: "base" }));
 
-  // render select
   sel.innerHTML = `<option value="">Tất cả môn học</option>` +
-    subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+    allSubjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
 
-  // render grid
-  renderSubjectGrid(subjects);
+  // render bảng môn theo loại
+  renderSubjectTables(grouped);
 }
+function renderSubjectTables(grouped) {
+  const container = document.getElementById("subjectTableContainer");
+  if (!container) return;
+  container.innerHTML = "";
 
+  Object.keys(grouped).sort().forEach(loai => {
+    const groupBox = document.createElement("div");
+    groupBox.className = "mb-4";
 
+    // tiêu đề nhóm
+    groupBox.innerHTML = `<h5 class="mb-2 text-brand-red">${loai}</h5>`;
+
+    // grid môn
+    const grid = document.createElement("div");
+    grid.className = "subject-grid";
+    grid.innerHTML = Array.from(grouped[loai]).map(s => `
+      <div class="subject-cell" data-subject="${escapeHtml(s)}">${escapeHtml(s)}</div>
+    `).join("");
+
+    // gắn sự kiện click
+    grid.querySelectorAll(".subject-cell").forEach(cell => {
+      cell.addEventListener("click", () => {
+        // bỏ active trong toàn bộ container
+        container.querySelectorAll(".subject-cell").forEach(c => c.classList.remove("active"));
+        cell.classList.add("active");
+
+        // đồng bộ select + apply filter
+        const sel = document.getElementById("subjectFilter");
+        if (sel) sel.value = cell.dataset.subject;
+        applyFilters();
+      });
+    });
+
+    groupBox.appendChild(grid);
+    container.appendChild(groupBox);
+  });
+}
 function renderSubjectGrid(subjects) {
   const container = document.getElementById("subjectTableContainer");
   if (!container) return;
