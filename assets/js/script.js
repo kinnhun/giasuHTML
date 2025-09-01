@@ -1,681 +1,520 @@
-function loadComponent(id, path) {
-    return fetch(path)
-        .then(res => res.text())
-        .then(html => {
-            const container = document.getElementById(id);
-            if (!container) return;
-
-            container.innerHTML = html;
-            const scripts = container.querySelectorAll("script");
-            scripts.forEach(oldScript => {
-                const newScript = document.createElement("script");
-                if (oldScript.src) {
-                    newScript.src = oldScript.src;
-                } else {
-                    newScript.textContent = oldScript.textContent;
-                }
-                oldScript.replaceWith(newScript);
-            });
-        });
-}
 
 
-loadComponent("header", "components/header.html").then(() => {
-    renderJoinZaloButton();
-    navbarActive();
-});
-loadComponent("section-1", "components/section-1.html").then(() => {
-    loadCtaContainer();
-});
+(() => {
+  'use strict';
 
-loadComponent("section-2", "components/section-2.html").then(() => {
-    renderSection2MessengerButton();
-    renderSection2NoiQuyNhanLop();
-});
-loadComponent("section-3", "components/section-3.html");
-loadComponent("section-4", "components/section-4.html").then(() => {
-  // Cập nhật lại dữ liệu mỗi 5 giây
-setInterval(() => {
-  loadClassListFromSheet();
-}, 5000);
-
-
-    setInterval(() => {
-        fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/L%E1%BB%9Bp%20m%E1%BB%9Bi")
-            .then(res => res.json())
-            .then(data => {
-                allClassData = data;
-                applyFilters(false);
-            });
-    }, 1000);
-
-});
-loadComponent("section-5", "components/section-5.html").then(() => {
-
-    loadFeedbackSection();
-
-});
-loadComponent("footer", "components/footer.html");
-
-
-
-function enableSmartScroll() {
-    const sections = Array.from(document.querySelectorAll('[id^="section-"]'));
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-                const currentSection = entry.target;
-                const nextSection = getNextSection(currentSection.id);
-                if (nextSection) {
-                    setTimeout(() => {
-                        nextSection.scrollIntoView({ behavior: 'smooth' });
-                    }, 200);
-                }
-            }
-        });
-    }, {
-        threshold: 0.5
-    });
-
-    sections.forEach((section) => observer.observe(section));
-
-    function getNextSection(currentId) {
-        const index = sections.findIndex(sec => sec.id === currentId);
-        return sections[index + 1] || null;
+  const CONFIG = Object.freeze({
+    REFRESH_MS: 120_000, 
+    SHEETS: {
+      CLASS_LIST: 'https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/L%E1%BB%9Bp%20m%E1%BB%9Bi',
+      FEEDBACK:   'https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Feedback',
+      CTA_LINK:   'https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Link%20nh%E1%BA%ADn%20l%E1%BB%9Bp',
+      INBOX_NOW:  'https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Inbox%20ngay',
+      MSG_CENTER: 'https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Nh%E1%BA%AFn%20tin%20v%E1%BB%9Bi%20trung%20t%C3%A2m',
+      RULES:      'https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/N%E1%BB%99i%20quy%20nh%E1%BA%ADn%20l%E1%BB%9Bp',
+    },
+    DOM: {
+      HEADER: 'header',
+      SECTION_1: 'section-1',
+      SECTION_2: 'section-2',
+      SECTION_3: 'section-3',
+      SECTION_4: 'section-4',
+      SECTION_5: 'section-5',
+      FOOTER: 'footer',
+      // Section-1
+      CTA_CONTAINER: 'ctaContainer',
+      // Section-2
+      MSG_CENTER_BTN: 'section-2nhantinvoitrungtam',
+      RULES_CONTAINER: 'section-2-noiquynhanlop',
+      // Header
+      ZALO_BTN: 'thamgianhomzalo',
+      // Section-4 (class list)
+      CLASS_LIST: 'classListContainer',
+      CLASS_SEARCH: 'classSearchInput',
+      SUBJECT_FILTER: 'subjectFilter',
+      SUBJECT_TABLE: 'subjectTableContainer',
+      PAGINATION: 'paginationControls',
+      // Section-5 (feedback)
+      FEEDBACK_CONTAINER: 'feedbackContainer',
     }
-}
-
-function enableSmartScroll() {
-    const sections = Array.from(document.querySelectorAll('[id^="section-"]'));
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-                const currentSection = entry.target;
-                const nextSection = getNextSection(currentSection.id);
-                if (nextSection) {
-                    setTimeout(() => {
-                        nextSection.scrollIntoView({ behavior: 'smooth' });
-                    }, 200);
-                }
-            }
-        });
-    }, {
-        threshold: 0.5
-    });
-
-    sections.forEach((section) => observer.observe(section));
-
-    function getNextSection(currentId) {
-        const index = sections.findIndex(sec => sec.id === currentId);
-        return sections[index + 1] || null;
-    }
-}
-
-
-
-
-
-function addSectionAnimations() {
-    const section = document.querySelector('.section-1');
-    const heading = section.querySelector('.section-1__heading');
-    const quoteBox = section.querySelector('.section-1__quote-box');
-    const cta = section.querySelector('.section-1__cta');
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                heading.classList.add('animate-zoom-in');
-                quoteBox.classList.add('animate-fade-in-up');
-                cta.classList.add('animate-pulse-loop');
-                observer.unobserve(section);
-            }
-        });
-    }, {
-        threshold: 0.5
-    });
-
-    observer.observe(section);
-}
-
-window.addEventListener('load', () => {
-    setTimeout(addSectionAnimations, 400);
-});
-
-
-
-
-
-
-let allClassData = [];
-let currentPage = 1;
-const itemsPerPage = 6;
-
-function loadClassListFromSheet() {
-    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/L%E1%BB%9Bp%20m%E1%BB%9Bi";
-
-    fetch(sheetURL)
-        .then(res => res.json())
-        .then(data => {
-            allClassData = data;
-
-            // Cập nhật danh sách môn học vào select mỗi lần load (giữ lựa chọn hiện tại nếu có)
-            populateSubjectOptions(allClassData);
-
-            applyFilters();
-        })
-        .catch(err => {
-            document.getElementById("classListContainer").innerHTML =
-                `<p class="text-danger text-center">Không thể tải dữ liệu lớp học.</p>`;
-            console.error(err);
-        });
-}
-
-function populateSubjectOptions(data) {
-  const sel = document.getElementById("subjectFilter");
-  if (!sel) return;
-
-  // gom môn học theo loại
-  const grouped = {};
-  (data || []).forEach(item => {
-    const loai = item["Loại"]?.trim() || "Khác";
-    const mon = (item["Môn"] || "").trim();
-    if (!mon) return;
-    if (!grouped[loai]) grouped[loai] = new Set();
-    grouped[loai].add(mon);
   });
 
-  // render select (tất cả môn chung)
-  const allSubjects = Array.from(
-    new Set((data || []).map(i => (i["Môn"] || "").trim()).filter(Boolean))
-  ).sort((a, b) => a.localeCompare(b, "vi", { sensitivity: "base" }));
+  const STATE = {
+    classes: [],
+    currentPage: 1,
+    itemsPerPage: 6,
+    feedbackSwiper: null,
+  };
 
-  sel.innerHTML = `<option value="">Tất cả môn học</option>` +
-    allSubjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
 
-  // render bảng môn theo loại
-  renderSubjectTables(grouped);
-}
-function renderSubjectTables(grouped) {
-  const container = document.getElementById("subjectTableContainer");
-  if (!container) return;
-  container.innerHTML = "";
+  const $id = (id) => document.getElementById(id);
 
-  Object.keys(grouped).sort().forEach(loai => {
-    const groupBox = document.createElement("div");
-    groupBox.className = "mb-4";
+  const escapeHtml = (str) => String(str ?? '').replace(/[&<>"']/g, (m) => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  })[m]);
 
-    // tiêu đề nhóm
-    groupBox.innerHTML = `<h5 class="mb-2 text-brand-red">${loai}</h5>`;
+  const debounce = (fn, ms = 200) => {
+    let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  };
 
-    // grid môn
-    const grid = document.createElement("div");
-    grid.className = "subject-grid";
-    grid.innerHTML = Array.from(grouped[loai]).map(s => `
-      <div class="subject-cell" data-subject="${escapeHtml(s)}">${escapeHtml(s)}</div>
-    `).join("");
+  const convertDriveLinkToImage = (link) => {
+    if (!link) return 'https://via.placeholder.com/300x200?text=No+Image';
+    const m = link.match(/\/file\/d\/([^/]+)\//);
+    const id = m?.[1];
+    return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400`
+              : 'https://via.placeholder.com/300x200?text=No+Image';
+  };
 
-    // gắn sự kiện click
-    grid.querySelectorAll(".subject-cell").forEach(cell => {
-      cell.addEventListener("click", () => {
-        // bỏ active trong toàn bộ container
-        container.querySelectorAll(".subject-cell").forEach(c => c.classList.remove("active"));
-        cell.classList.add("active");
+  async function fetchJSON(url, signal) {
+    const res = await fetch(url, { cache: 'no-store', signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status} @ ${url}`);
+    return res.json();
+  }
 
-        // đồng bộ select + apply filter
-        const sel = document.getElementById("subjectFilter");
+
+  function createPoller(name, fn, intervalMs = CONFIG.REFRESH_MS) {
+    let timer = null;
+    let controller = null;
+    let stopped = false;
+
+    const schedule = () => {
+      if (stopped) return;
+      timer = setTimeout(tick, intervalMs);
+    };
+
+    const tick = async () => {
+      if (stopped) return;
+      try {
+        controller?.abort();
+        controller = new AbortController();
+        await fn(controller.signal);
+      } catch (err) {
+        console.warn(`[${name}]`, err?.message || err);
+      } finally {
+        schedule();
+      }
+    };
+
+    const start = () => {
+      if (stopped) {
+        stopped = false;
+      }
+      clearTimeout(timer);
+      tick(); 
+    };
+
+    const stop = () => {
+      stopped = true;
+      clearTimeout(timer);
+      controller?.abort();
+    };
+
+    const onVisibility = () => {
+      if (document.hidden) stop(); else start();
+    };
+
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return { start, stop, _onVisibility: onVisibility };
+  }
+
+
+  function loadComponent(id, path) {
+    return fetch(path)
+      .then(res => res.text())
+      .then(html => {
+        const container = $id(id);
+        if (!container) return;
+
+        container.innerHTML = html;
+
+        container.querySelectorAll('script').forEach((oldScript) => {
+          const s = document.createElement('script');
+          if (oldScript.src) s.src = oldScript.src; else s.textContent = oldScript.textContent;
+          oldScript.replaceWith(s);
+        });
+      });
+  }
+
+
+  function navbarActive() {
+    const links = document.querySelectorAll('.navbar-nav .nav-link');
+    const sync = () => {
+      const current = window.location.hash;
+      links.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === current));
+    };
+    links.forEach((a) => a.addEventListener('click', () => setTimeout(sync, 100)));
+    window.addEventListener('load', sync);
+    window.addEventListener('hashchange', sync);
+  }
+
+  function enableSmartScroll() {
+    const sections = Array.from(document.querySelectorAll('[id^="section-"]'));
+    if (!sections.length) return;
+
+    function scrollToHashSection() {
+      const hash = window.location.hash;
+      if (hash) {
+        const target = document.querySelector(hash);
+        if (target) {
+          setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }, 200);
+        }
+      }
+    }
+
+    window.addEventListener('hashchange', scrollToHashSection);
+    window.addEventListener('load', scrollToHashSection);
+  }
+
+  function addSectionAnimations() {
+    const section = document.querySelector('.section-1');
+    if (!section) return;
+
+    const heading = section.querySelector('.section-1__heading');
+    const quote   = section.querySelector('.section-1__quote-box');
+    const cta     = section.querySelector('.section-1__cta');
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          heading?.classList.add('animate-zoom-in');
+          quote?.classList.add('animate-fade-in-up');
+          cta?.classList.add('animate-pulse-loop');
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    io.observe(section);
+  }
+
+
+  async function renderJoinZaloButton(signal) {
+    const container = $id(CONFIG.DOM.ZALO_BTN);
+    if (!container) return;
+    const data = await fetchJSON(CONFIG.SHEETS.INBOX_NOW, signal);
+    const link = data?.[0]?.['Link']?.trim();
+    container.innerHTML = link ? `
+      <a href="${link}" target="_blank" class="header-inbox-btn" style="display:inline-flex;align-items:center;gap:8px;width:100%">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/512px-Icon_of_Zalo.svg.png" alt="Zalo icon" width="24" height="24" loading="lazy"/>
+        <span>THAM GIA NHÓM ZALO NGAY <br/>ĐỂ NHẬN THÔNG BÁO MỚI NHẤT</span>
+      </a>` : '';
+  }
+
+  async function renderCta(signal) {
+    const container = $id(CONFIG.DOM.CTA_CONTAINER);
+    if (!container) return;
+    const data = await fetchJSON(CONFIG.SHEETS.CTA_LINK, signal);
+    const firstLink = data?.[0]?.['Link nhận lớp']?.trim();
+    if (!firstLink) return;
+    container.innerHTML = `
+      <a href="${firstLink}" target="_blank" class="btn btn-edumentor section-1__cta uniform-width cta-shake">
+        INBOX FACEBOOK ĐỂ NHẬN LỚP
+      </a>`;
+  }
+
+  async function renderSection2MessengerButton(signal) {
+    const container = $id(CONFIG.DOM.MSG_CENTER_BTN);
+    if (!container) return;
+    const data = await fetchJSON(CONFIG.SHEETS.MSG_CENTER, signal);
+    const link = data?.[0]?.['Link']?.trim();
+    container.innerHTML = link ? `
+      <div class="button-container">
+        <a href="${link}" target="_blank" class="btn-edumentor" style="text-decoration:none;">NHẮN TIN VỚI TRUNG TÂM NGAY!</a>
+      </div>` : '';
+  }
+
+  async function renderSection2Rules(signal) {
+    const container = $id(CONFIG.DOM.RULES_CONTAINER);
+    if (!container) return;
+    const data = await fetchJSON(CONFIG.SHEETS.RULES, signal);
+    const link = data?.[0]?.['Link']?.trim();
+    container.innerHTML = link ? `
+      <div class="text-center mt-4">
+        <a href="${link}" class="btn btn-edumentor section-2__cta px-4 py-2">ĐỌC NỘI QUY NHẬN LỚP TẠI ĐÂY</a>
+      </div>` : '<p class="text-danger">Không tìm thấy nội quy.</p>';
+  }
+
+  async function renderFeedback(signal) {
+    const container = $id(CONFIG.DOM.FEEDBACK_CONTAINER);
+    if (!container) return;
+
+    const data = await fetchJSON(CONFIG.SHEETS.FEEDBACK, signal);
+    container.innerHTML = '';
+
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML = '<div class="swiper-slide"><p class="section-5__text-center">Không có feedback nào.</p></div>';
+    } else {
+      container.innerHTML = data.map((item) => {
+        const imgSrc = convertDriveLinkToImage(item['Link feedback']);
+        const teacher = escapeHtml(item['Tên giáo viên'] || 'Không rõ');
+        const content = escapeHtml(item['Nội dung feedback'] || 'Không có nội dung');
+        return `
+          <div class="swiper-slide">
+            <div class="section-5__card">
+              <img src="${imgSrc}" class="section-5__feedback-img" alt="Feedback image" loading="lazy" />
+              <div class="section-5__brand-box">
+                <div class="section-5__logo"></div>
+                <div class="section-5__brand">Edu Mentor</div>
+                <div class="section-5__title">Feedback từ giáo viên</div>
+                <ul class="section-5__features">
+                  <li>${teacher}</li>
+                  <li>${content}</li>
+                </ul>
+                <div class="section-5__quote">"Cảm ơn vì đã tin tưởng dịch vụ của chúng tôi!"</div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    try {
+      if (STATE.feedbackSwiper && typeof STATE.feedbackSwiper.destroy === 'function') {
+        STATE.feedbackSwiper.destroy(true, true);
+      }
+      STATE.feedbackSwiper = new Swiper('.feedback-swiper', {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        loop: true,
+        autoplay: { delay: 9000, disableOnInteraction: false },
+      });
+    } catch (e) {
+      console.warn('Swiper init skipped:', e?.message || e);
+    }
+  }
+
+
+  function bindClassFilters() {
+    const search = $id(CONFIG.DOM.CLASS_SEARCH);
+    const select = $id(CONFIG.DOM.SUBJECT_FILTER);
+    if (search) search.addEventListener('input', debounce(() => applyFilters(), 200));
+    if (select) select.addEventListener('change', () => applyFilters());
+  }
+
+  async function loadClassList(signal) {
+    const data = await fetchJSON(CONFIG.SHEETS.CLASS_LIST, signal);
+    if (!Array.isArray(data)) return;
+    STATE.classes = data;
+    populateSubjectOptions(data);
+    applyFilters();
+  }
+
+  function populateSubjectOptions(data) {
+    const sel = $id(CONFIG.DOM.SUBJECT_FILTER);
+    const tableContainer = $id(CONFIG.DOM.SUBJECT_TABLE);
+    if (!sel && !tableContainer) return;
+
+    const grouped = {};
+    (data || []).forEach((item) => {
+      const loai = (item['Loại'] || 'Khác').trim();
+      const mon  = (item['Môn']  || '').trim();
+      if (!mon) return;
+      (grouped[loai] ||= new Set()).add(mon);
+    });
+
+    const allSubjects = Array.from(new Set((data || []).map(i => (i['Môn'] || '').trim()).filter(Boolean)))
+      .sort((a,b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+
+    if (sel) {
+      sel.innerHTML = '<option value="">Tất cả môn học</option>' +
+        allSubjects.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+    }
+
+    if (tableContainer) renderSubjectTables(grouped);
+  }
+
+  function renderSubjectTables(grouped) {
+    const container = $id(CONFIG.DOM.SUBJECT_TABLE);
+    if (!container) return;
+
+    container.innerHTML = '';
+    Object.keys(grouped).sort().forEach((loai) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'mb-4';
+      wrap.innerHTML = `<h5 class="mb-2 text-brand-red">${escapeHtml(loai)}</h5>`;
+
+      const grid = document.createElement('div');
+      grid.className = 'subject-grid';
+      grid.innerHTML = Array.from(grouped[loai]).map((s) => `
+        <div class="subject-cell" data-subject="${escapeHtml(s)}">${escapeHtml(s)}</div>
+      `).join('');
+
+      grid.addEventListener('click', (ev) => {
+        const cell = ev.target.closest('.subject-cell');
+        if (!cell) return;
+        grid.querySelectorAll('.subject-cell').forEach((c) => c.classList.remove('active'));
+        cell.classList.add('active');
+        const sel = $id(CONFIG.DOM.SUBJECT_FILTER);
         if (sel) sel.value = cell.dataset.subject;
         applyFilters();
       });
+
+      wrap.appendChild(grid);
+      container.appendChild(wrap);
     });
+  }
 
-    groupBox.appendChild(grid);
-    container.appendChild(groupBox);
-  });
-}
-function renderSubjectGrid(subjects) {
-  const container = document.getElementById("subjectTableContainer");
-  if (!container) return;
+  function applyFilters(resetPage = true) {
+    const searchEl = $id(CONFIG.DOM.CLASS_SEARCH);
+    const subjectEl = $id(CONFIG.DOM.SUBJECT_FILTER);
+    const keyword = (searchEl?.value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    const selectedSubject = (subjectEl?.value || '').trim();
 
-  container.innerHTML = subjects.map(s => `
-    <div class="subject-cell" data-subject="${escapeHtml(s)}">${escapeHtml(s)}</div>
-  `).join('');
-
-  // gắn sự kiện click
-  container.querySelectorAll(".subject-cell").forEach(cell => {
-    cell.addEventListener("click", () => {
-      container.querySelectorAll(".subject-cell").forEach(c => c.classList.remove("active"));
-      cell.classList.add("active");
-
-      // đồng bộ với select + lọc
-      const sel = document.getElementById("subjectFilter");
-      if (sel) sel.value = cell.dataset.subject;
-      applyFilters();
-    });
-  });
-}
-
-/** Escape đơn giản để an toàn khi render text vào HTML */
-function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, m => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[m]));
-}
-
-function applyFilters(resetPage = true) {
-    const keyword = document.getElementById("classSearchInput")
-        .value.replace(/\s+/g, ' ').trim().toLowerCase();
-
-    const selectedSubject = (document.getElementById("subjectFilter")?.value || "").trim();
-
-    const filtered = allClassData.filter(item => {
-        // Ghép text để tìm theo từ khóa
-        const rawText = `${item["Mã môn"]} ${item["Môn"]} ${item["Khu vực"]} ${item["Lịch học"]} ${item["Học phí"]} ${item["Yêu cầu"]} ${item["Hình thức học"]}`.toLowerCase();
-        const text = rawText.replace(/\s+/g, ' ').trim();
-
-        // Điều kiện theo từ khóa
-        const matchKeyword = !keyword || text.includes(keyword);
-
-        // Điều kiện theo môn học (đúng tuyệt đối theo option đã populate)
-        const subject = (item["Môn"] || "").trim();
-        const matchSubject = !selectedSubject || subject === selectedSubject;
-
-        return matchKeyword && matchSubject;
+    const filtered = STATE.classes.filter((item) => {
+      const raw = `${item['Mã môn']} ${item['Môn']} ${item['Khu vực']} ${item['Lịch học']} ${item['Học phí']} ${item['Yêu cầu']} ${item['Hình thức học']}`.toLowerCase();
+      const text = raw.replace(/\s+/g, ' ').trim();
+      const subject = (item['Môn'] || '').trim();
+      const matchKeyword = !keyword || text.includes(keyword);
+      const matchSubject = !selectedSubject || subject === selectedSubject;
+      return matchKeyword && matchSubject;
     });
 
     if (resetPage) {
-        currentPage = 1;
+      STATE.currentPage = 1;
     } else {
-        const totalPages = Math.ceil(filtered.length / itemsPerPage);
-        if (currentPage > totalPages) currentPage = totalPages || 1;
+      const total = Math.ceil(filtered.length / STATE.itemsPerPage);
+      if (STATE.currentPage > total) STATE.currentPage = total || 1;
     }
 
     renderClassCards(filtered);
     renderPagination(filtered);
-}
+  }
 
-function renderClassCards(data) {
-    const container = document.getElementById("classListContainer");
+  function renderClassCards(data) {
+    const container = $id(CONFIG.DOM.CLASS_LIST);
     if (!container) return;
 
-    container.innerHTML = "";
-
+    container.innerHTML = '';
     if (!Array.isArray(data) || data.length === 0) {
-        container.innerHTML = `<p class="text-center text-muted">Không tìm thấy lớp nào phù hợp.</p>`;
-        return;
+      container.innerHTML = '<p class="text-center text-muted">Không tìm thấy lớp nào phù hợp.</p>';
+      return;
     }
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentItems = data.slice(startIndex, endIndex);
+    const start = (STATE.currentPage - 1) * STATE.itemsPerPage;
+    const items = data.slice(start, start + STATE.itemsPerPage);
 
-    currentItems.forEach(item => {
-        const mon = item["Môn"]?.trim();
-        const maMon = item["Mã môn"]?.trim() || "Không có";
-        const hinhThucRaw = item["Hình thức học"]?.trim() || "Không rõ";
-        const khuVuc = item["Khu vực"]?.trim();
-        const lichHoc = item["Lịch học"]?.trim() || "Đang cập nhật";
-        const hocPhi = item["Học phí"]?.trim() || "Liên hệ";
-        const yeuCau = item["Yêu cầu"]?.trim() || "Không yêu cầu cụ thể";
-        const linkNhanLop = item["Link nhận lớp"]?.trim();
+    items.forEach((item) => {
+      const mon = item['Môn']?.trim();
+      const maMon = item['Mã môn']?.trim() || 'Không có';
+      const hinhThucRaw = item['Hình thức học']?.trim() || 'Không rõ';
+      const khuVuc = item['Khu vực']?.trim();
+      const lichHoc = item['Lịch học']?.trim() || 'Đang cập nhật';
+      const hocPhi = item['Học phí']?.trim() || 'Liên hệ';
+      const yeuCau = item['Yêu cầu']?.trim() || 'Không yêu cầu cụ thể';
+      const linkNhanLop = item['Link nhận lớp']?.trim();
+      if (!mon || !khuVuc) return;
 
-        if (!mon || !khuVuc) return;
+      const type = hinhThucRaw.toLowerCase();
+      const badge = type === 'online' ? `<span class="badge bg-success">${escapeHtml(hinhThucRaw)}</span>`
+                  : type === 'offline' ? `<span class="badge bg-warning text-dark">${escapeHtml(hinhThucRaw)}</span>`
+                  : `<span class="badge bg-secondary">${escapeHtml(hinhThucRaw)}</span>`;
 
-        // Badge màu cho hình thức học
-        const hinhThuc = hinhThucRaw.toLowerCase();
-        let hinhThucHTML = "";
-        if (hinhThuc === "online") {
-            hinhThucHTML = `<span class="badge bg-success">${escapeHtml(hinhThucRaw)}</span>`;
-        } else if (hinhThuc === "offline") {
-            hinhThucHTML = `<span class="badge bg-warning text-dark">${escapeHtml(hinhThucRaw)}</span>`;
-        } else {
-            hinhThucHTML = `<span class="badge bg-secondary">${escapeHtml(hinhThucRaw)}</span>`;
-        }
-
-        const card = document.createElement("div");
-        card.className = "col-lg-4 col-md-6";
-        card.innerHTML = `
+      const card = document.createElement('div');
+      card.className = 'col-lg-4 col-md-6';
+      card.innerHTML = `
         <div class="section-4__card h-100 d-flex flex-column justify-content-between">
-            <div>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="section-4__subject mb-0">${escapeHtml(mon)}</h5>
-                    <span class="badge bg-secondary">Mã: ${escapeHtml(maMon)}</span>
-                </div>
-                <ul class="section-4__info list-unstyled mb-3">
-                    <li><strong>Hình thức học:</strong> ${hinhThucHTML}</li>
-                    <li><strong>Khu vực:</strong> ${escapeHtml(khuVuc)}</li>
-                    <li><strong>Lịch học:</strong> ${escapeHtml(lichHoc)}</li>
-                    <li><strong>Học phí:</strong> ${escapeHtml(hocPhi)}</li>
-                    <li><strong>Yêu cầu:</strong> ${escapeHtml(yeuCau)}</li>
-                </ul>
+          <div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="section-4__subject mb-0">${escapeHtml(mon)}</h5>
+              <span class="badge bg-secondary">Mã: ${escapeHtml(maMon)}</span>
             </div>
-            <button class="btn-edumentor w-100 mt-auto" ${linkNhanLop ? `onclick="window.open('${linkNhanLop}', '_blank')"` : "disabled"}>
-                Nhận lớp ngay
-            </button>
+            <ul class="section-4__info list-unstyled mb-3">
+              <li><strong>Hình thức học:</strong> ${badge}</li>
+              <li><strong>Khu vực:</strong> ${escapeHtml(khuVuc)}</li>
+              <li><strong>Lịch học:</strong> ${escapeHtml(lichHoc)}</li>
+              <li><strong>Học phí:</strong> ${escapeHtml(hocPhi)}</li>
+              <li><strong>Yêu cầu:</strong> ${escapeHtml(yeuCau)}</li>
+            </ul>
+          </div>
+          <button class="btn-edumentor w-100 mt-auto" ${linkNhanLop ? `data-href="${escapeHtml(linkNhanLop)}"` : 'disabled'}>
+            Nhận lớp ngay
+          </button>
         </div>`;
-        container.appendChild(card);
+
+      const btn = card.querySelector('button.btn-edumentor');
+      if (btn && linkNhanLop) btn.addEventListener('click', () => window.open(linkNhanLop, '_blank'));
+
+      container.appendChild(card);
     });
-}
+  }
 
-function renderPagination(data) {
-    const paginationContainerId = "paginationControls";
-    let paginationContainer = document.getElementById(paginationContainerId);
+  function renderPagination(data) {
+    const container = document.querySelector('.section-4 .container');
+    if (!container) return;
+    let box = $id(CONFIG.DOM.PAGINATION);
 
-    if (!paginationContainer) {
-        paginationContainer = document.createElement("div");
-        paginationContainer.id = paginationContainerId;
-        paginationContainer.className = "d-flex justify-content-center mt-4 flex-wrap gap-2";
-        document.querySelector(".section-4 .container").appendChild(paginationContainer);
+    if (!box) {
+      box = document.createElement('div');
+      box.id = CONFIG.DOM.PAGINATION;
+      box.className = 'd-flex justify-content-center mt-4 flex-wrap gap-2';
+      container.appendChild(box);
     }
 
-    paginationContainer.innerHTML = "";
-
-    const totalPages = Math.ceil(data.length / itemsPerPage);
+    const totalPages = Math.ceil(data.length / STATE.itemsPerPage);
+    box.innerHTML = '';
     if (totalPages <= 1) return;
 
-    const createBtn = (text, page, isActive = false, disabled = false) => {
-        const btn = document.createElement("button");
-        btn.className = `btn btn-sm ${isActive ? 'btn-primary' : 'btn-outline-primary'}`;
-        btn.disabled = disabled;
-        btn.textContent = text;
-        btn.addEventListener("click", () => {
-            currentPage = page;
-            renderClassCards(data);
-            renderPagination(data);
-            const target = document.getElementById("classListContainer");
-            if (target) {
-                const offset = 90;
-                const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                window.scrollTo({ top, behavior: "smooth" });
-            }
-        });
-        return btn;
+    const makeBtn = (text, page, isActive = false, disabled = false) => {
+      const b = document.createElement('button');
+      b.className = `btn btn-sm ${isActive ? 'btn-primary' : 'btn-outline-primary'}`;
+      b.disabled = disabled; b.textContent = text;
+      b.addEventListener('click', () => {
+        STATE.currentPage = page;
+        renderClassCards(data);
+        renderPagination(data);
+        const target = $id(CONFIG.DOM.CLASS_LIST);
+        if (target) {
+          const offset = 90;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+      return b;
     };
 
-    paginationContainer.appendChild(createBtn("«", currentPage - 1, false, currentPage === 1));
-    for (let i = 1; i <= totalPages; i++) {
-        paginationContainer.appendChild(createBtn(i, i, i === currentPage));
-    }
-    paginationContainer.appendChild(createBtn("»", currentPage + 1, false, currentPage === totalPages));
-}
-
-document.getElementById("classSearchInput").addEventListener("input", () => applyFilters());
-document.getElementById("subjectFilter")?.addEventListener("change", () => applyFilters());
-
-// Cập nhật lại dữ liệu mỗi 5 giây
-setInterval(() => {
-  loadClassListFromSheet();
-}, 50000);
-setInterval(loadClassListFromSheet, 3 * 60 * 1000);
-
-
-
-
-
-
-function convertDriveLinkToImage(link) {
-    if (!link) return "https://via.placeholder.com/300x200?text=No+Image";
-    const fileMatch = link.match(/\/file\/d\/([^/]+)\//);
-    const id = fileMatch?.[1];
-    return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400` : "https://via.placeholder.com/300x200?text=No+Image";
-}
-
-function loadFeedbackSection() {
-    fetch("https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Feedback")
-        .then(res => res.json())
-        .then(data => {
-            const container = document.getElementById("feedbackContainer");
-            container.innerHTML = "";
-
-            if (!data || data.length === 0) {
-                container.innerHTML = `<div class="swiper-slide"><p class="section-5__text-center">Không có feedback nào.</p></div>`;
-                return;
-            }
-
-            data.forEach(item => {
-                const imgSrc = convertDriveLinkToImage(item["Link feedback"]);
-                const teacher = item["Tên giáo viên"] || "Không rõ";
-                const role = item["Vai trò"] || "Không rõ";
-                const content = item["Nội dung feedback"] || "Không có nội dung";
-
-                container.innerHTML += `
-            <div class="swiper-slide">
-              <div class="section-5__card">
-                <img src="${imgSrc}" class="section-5__feedback-img" alt="Feedback image" loading="lazy">
-                <div class="section-5__brand-box">
-                  <div class="section-5__logo">
-                  </div>
-                  <div class="section-5__brand">Edu Mentor</div>
-                  <div class="section-5__title">Feedback từ giáo viên</div>
-                  <ul class="section-5__features">
-                    <li>${teacher}</li>
-                    <li>${content}</li>
-                  </ul>
-                  <div class="section-5__quote">"Cảm ơn vì đã tin tưởng dịch vụ của chúng tôi!"</div>
-                </div>
-              </div>
-            </div>
-          `;
-            });
-
-            new Swiper(".feedback-swiper", {
-                slidesPerView: 1,
-                spaceBetween: 30,
-                navigation: {
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
-                },
-                loop: true,
-                autoplay: {
-                    delay: 9000,
-                    disableOnInteraction: false,
-                },
-            });
-        })
-        .catch(err => {
-            console.error("Fetch error:", err);
-            document.getElementById("feedbackContainer").innerHTML = `
-          <div class="swiper-slide"><p class="section-5__text-center">Không thể tải feedback: ${err.message}</p></div>
-        `;
-        });
-}
-
-document.addEventListener("DOMContentLoaded", loadFeedbackSection);
-
-
-
-
-
-
-
-
-
-
-function loadCtaContainer() {
-    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Link%20nh%E1%BA%ADn%20l%E1%BB%9Bp";
-
-    fetch(sheetURL)
-        .then(res => res.json())
-        .then(data => {
-            const firstLink = data[0]?.["Link nhận lớp"]?.trim();
-            const container = document.getElementById("ctaContainer");
-
-            if (!firstLink) {
-                console.warn("Không tìm thấy link hợp lệ từ Sheet.");
-                return;
-            }
-
-            if (!container) {
-                console.warn("Không tìm thấy phần tử có id='ctaContainer'.");
-                return;
-            }
-
-            container.innerHTML = `
-        <a href="${firstLink}" target="_blank"
-           class="btn btn-edumentor section-1__cta uniform-width cta-shake">
-          INBOX FACEBOOK ĐỂ NHẬN LỚP
-        </a>
-      `;
-        })
-        .catch(err => {
-            console.error("Lỗi khi tải link nhận lớp:", err);
-        });
-}
-
-
-
-
-function renderSection2MessengerButton() {
-    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Nh%E1%BA%AFn%20tin%20v%E1%BB%9Bi%20trung%20t%C3%A2m";
-
-    fetch(sheetURL)
-        .then(res => res.json())
-        .then(data => {
-            const link = data[0]?.["Link"]?.trim();
-            const container = document.getElementById("section-2nhantinvoitrungtam");
-
-            if (link && container) {
-                container.innerHTML = `
-          <div class="button-container">
-            <a href="${link}" target="_blank" class="btn-edumentor" style="text-decoration: none;">
-              NHẮN TIN VỚI TRUNG TÂM NGAY!
-            </a>
-          </div>
-        `;
-            } else {
-                console.warn("Không tìm thấy link hoặc container để hiển thị.");
-            }
-        })
-        .catch(err => {
-            console.error("Lỗi khi fetch link Nhắn tin với trung tâm:", err);
-        });
-}
-
-
-
-
-function renderSection2NoiQuyNhanLop() {
-    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/N%E1%BB%99i%20quy%20nh%E1%BA%ADn%20l%E1%BB%9Bp";
-    const container = document.getElementById("section-2-noiquynhanlop");
-
-    fetch(sheetURL)
-        .then(res => res.json())
-        .then(data => {
-            const link = data[0]?.["Link"]?.trim();
-
-            if (link && container) {
-                container.innerHTML = `
-                 <div class="text-center mt-4">
-                    <a href="${link}" class="btn btn-edumentor section-2__cta px-4 py-2">
-                        ĐỌC NỘI QUY NHẬN LỚP TẠI ĐÂY
-                    </a>
-                </div>
-
-                  
-                `;
-            } else {
-                container.innerHTML = `<p class="text-danger">Không tìm thấy nội quy hoặc link nhắn tin.</p>`;
-                console.warn("Không tìm thấy link hoặc container.");
-            }
-        })
-        .catch(err => {
-            console.error("Lỗi khi fetch nội quy nhận lớp:", err);
-            if (container) {
-                container.innerHTML = `<p class="text-danger">Lỗi khi tải nội quy. Vui lòng thử lại sau.</p>`;
-            }
-        });
-}
-
-
-
-function renderJoinZaloButton() {
-    const sheetURL = "https://opensheet.elk.sh/1h9qiy1UYF6niv1MNrj4v7frYfa7yanFcJjOEtS-8OTQ/Inbox%20ngay";
-
-    fetch(sheetURL)
-        .then(res => res.json())
-        .then(data => {
-            const link = data[0]?.["Link"]?.trim();
-            const container = document.getElementById("thamgianhomzalo");
-
-            if (link && container) {
-                container.innerHTML = `
-          <a href="${link}" target="_blank" class="header-inbox-btn" style="display: inline-flex; align-items: center; gap: 8px; width: 100%;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/512px-Icon_of_Zalo.svg.png"
-                 alt="Zalo icon" width="24" height="24" loading="lazy" style="vertical-align: middle;" />
-            <span>
-              THAM GIA NHÓM ZALO NGAY <br>ĐỂ NHẬN THÔNG BÁO MỚI NHẤT
-            </span>
-          </a>
-        `;
-            } else {
-                console.warn("Không tìm thấy link hoặc phần tử #thamgianhomzalo.");
-            }
-        })
-        .catch(err => {
-            console.error("Lỗi khi fetch link Tham gia nhóm Zalo:", err);
-        });
-}
-
-
-
-function navbarActive() {
-    document.addEventListener("DOMContentLoaded", () => {
-        const links = document.querySelectorAll(".navbar-nav .nav-link");
-
-        function setActiveLinkFromHash() {
-            const currentHash = window.location.hash;
-
-            links.forEach(link => {
-                if (link.getAttribute("href") === currentHash) {
-                    link.classList.add("active");
-                } else {
-                    link.classList.remove("active");
-                }
-            });
-        }
-
-        links.forEach(link => {
-            link.addEventListener("click", () => {
-                // Delay để browser xử lý cuộn trước
-                setTimeout(setActiveLinkFromHash, 100);
-            });
-        });
-
-        window.addEventListener("load", setActiveLinkFromHash);
-        window.addEventListener("hashchange", setActiveLinkFromHash);
-    });
-}
-
-function renderSubjectTable(subjects, cols = 4) {
-  const container = document.getElementById("subjectTableContainer");
-  if (!container) return;
-
-  let html = '<table class="subject-table"><tbody>';
-  for (let i = 0; i < subjects.length; i += cols) {
-    const row = subjects.slice(i, i + cols);
-    html += "<tr>";
-    row.forEach(s => {
-      html += `<td data-subject="${escapeHtml(s)}">${escapeHtml(s)}</td>`;
-    });
-    if (row.length < cols) {
-      html += "<td></td>".repeat(cols - row.length); // điền ô trống
-    }
-    html += "</tr>";
+    box.appendChild(makeBtn('«', STATE.currentPage - 1, false, STATE.currentPage === 1));
+    for (let i = 1; i <= totalPages; i++) box.appendChild(makeBtn(String(i), i, i === STATE.currentPage));
+    box.appendChild(makeBtn('»', STATE.currentPage + 1, false, STATE.currentPage === totalPages));
   }
-  html += "</tbody></table>";
-  container.innerHTML = html;
 
-  // sự kiện click
-  container.querySelectorAll("td[data-subject]").forEach(cell => {
-    cell.addEventListener("click", () => {
-      container.querySelectorAll("td").forEach(c => c.classList.remove("active"));
-      cell.classList.add("active");
 
-      // đồng bộ với select + lọc
-      const sel = document.getElementById("subjectFilter");
-      if (sel) sel.value = cell.dataset.subject;
-      applyFilters();
-    });
-  });
-}
+  const pollers = {
+    headerZalo: createPoller('headerZalo', renderJoinZaloButton),
+    heroCta:    createPoller('heroCta', renderCta),
+    sec2Msg:    createPoller('sec2Msg', renderSection2MessengerButton),
+    sec2Rules:  createPoller('sec2Rules', renderSection2Rules),
+    classes:    createPoller('classes', loadClassList),
+    feedback:   createPoller('feedback', renderFeedback),
+  };
+
+  async function init() {
+    await Promise.all([
+      loadComponent(CONFIG.DOM.HEADER, 'components/header.html'),
+      loadComponent(CONFIG.DOM.SECTION_1, 'components/section-1.html'),
+      loadComponent(CONFIG.DOM.SECTION_2, 'components/section-2.html'),
+      loadComponent(CONFIG.DOM.SECTION_3, 'components/section-3.html'),
+      loadComponent(CONFIG.DOM.SECTION_4, 'components/section-4.html'),
+      loadComponent(CONFIG.DOM.SECTION_5, 'components/section-5.html'),
+      loadComponent(CONFIG.DOM.FOOTER, 'components/footer.html'),
+    ]);
+
+    navbarActive();
+    enableSmartScroll();
+    setTimeout(addSectionAnimations, 400);
+
+    bindClassFilters();
+
+    pollers.headerZalo.start();
+    pollers.heroCta.start();
+    pollers.sec2Msg.start();
+    pollers.sec2Rules.start();
+    pollers.classes.start();
+    pollers.feedback.start();
+  }
+
+  window.addEventListener('load', init, { once: true });
+
+})();

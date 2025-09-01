@@ -14,7 +14,6 @@ body {
     background-attachment: fixed, fixed, fixed;
 }
 
-
 .section-divider {
     height: 3px;
     max-width: 640px;
@@ -25,22 +24,16 @@ body {
     margin-bottom: -5rem;
 }
 
-
-
-/* ==== MÀU THƯƠNG HIỆU ==== */
 .text-brand-blue {
     color: #2c3e50;
-    /* Xanh đậm Edu */
 }
 
 .text-brand-red {
     color: #e74c3c;
-    /* Đỏ EduMentor */
 }
 
 .text-brand-yellow {
     color: #ffc107;
-    /* Vàng dùng làm viền / nhấn */
 }
 
 .bg-brand-blue {
@@ -55,7 +48,6 @@ body {
     background-color: #ffc107;
 }
 
-/* ==== NÚT ==== */
 .btn-edumentor {
     background-color: #e74c3c;
     color: #ffffff;
@@ -67,8 +59,6 @@ body {
     color: #ffffff;
 }
 
-
-
 .main-header {
     position: fixed;
     top: 0;
@@ -79,12 +69,7 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-
-
-
-
 /* ====================================================================== ==== */
-
 
 .section-1 {
     min-height: 100vh;
@@ -124,9 +109,6 @@ body {
     border-bottom-color: #e74c3c;
 }
 
-
-
-
 .section-1__heading {
     display: inline-block;
     background-color: #fff3e0;
@@ -148,22 +130,18 @@ body {
 
 .text-brand-blue {
     color: #0f2f76;
-    /* xanh đậm */
 }
 
 .text-brand-red {
     color: #dc2225;
-    /* đỏ nổi bật */
 }
 
 .text-brand-blue {
     color: #0b2461;
-    /* Navy đậm */
 }
 
 .text-brand-red {
     color: #d62323;
-    /* Đỏ tươi */
 }
 
 .section-1__quote-box {
@@ -188,28 +166,23 @@ body {
 
 }
 
-/* Viền góc trên trái */
 .section-1__quote-box::before {
     top: -1rem;
     left: -1rem;
     border-bottom: none;
     border-right: none;
     border-top-left-radius: 24px;
-    /* 👈 chỉ bo góc này */
 }
 
-/* Viền góc dưới phải */
 .section-1__quote-box::after {
     bottom: -1rem;
     right: -1rem;
     border-top: none;
     border-left: none;
     border-bottom-right-radius: 24px;
-    /* 👈 chỉ bo góc này */
 }
 
 
-/* Dấu ngoặc kép */
 .quote-mark {
     font-size: 5.6rem;
     font-family: serif;
@@ -230,7 +203,6 @@ body {
 
 }
 
-/* Nội dung */
 .section-1__quote-text {
     font-size: 1rem;
     font-weight: 600;
@@ -239,7 +211,6 @@ body {
     margin-bottom: 0.75rem;
 }
 
-/* Ký tên màu đỏ */
 .section-1__quote-sign .text-highlight {
     color: #e53935;
     font-weight: 600;
@@ -247,7 +218,6 @@ body {
 }
 
 
-/* Nút CTA tổng thể */
 .section-1__cta {
     display: inline-block;
     font-size: 1.5rem !important;
@@ -474,21 +444,11 @@ body {
     }
 }
 
-
-
-
-
-
 /* ====================================================================== ==== */
 
 .section-2 {
     margin-top: 4.5rem;
 }
-
-
-
-
-
 
 .section-2__headline {
     position: relative;
@@ -528,14 +488,6 @@ body {
         transform: translateY(0);
     }
 }
-
-
-
-
-
-
-
-
 
 .section-2__steps-box {
     background-color: white;
@@ -663,15 +615,10 @@ body {
     transform: translateY(-0.08rem);
 }
 
-
-
-
 .section-2__cta {
     font-size: 1rem;
     font-weight: 600;
 }
-
-
 
 .section-2__image,
 .img-fluid {
@@ -768,9 +715,6 @@ body {
     }
 }
 
-
-
-
 /* ====================================================================== ==== */
 .section-3__heading {
     font-size: 3rem;
@@ -779,9 +723,6 @@ body {
     text-shadow: 2px 2px 0 #fff, 4px 4px 0 #e74c3c;
     letter-spacing: 2px;
 }
-
-
-
 
 .section-3__box {
     background-color: white;
@@ -1070,10 +1011,6 @@ body {
     }
 }
 
-
-
-
-
 #paginationControls .btn {
     border-color: #e74c3c;
     color: #e74c3c;
@@ -1099,9 +1036,6 @@ body {
     opacity: 0.6;
     cursor: not-allowed;
 }
-
-
-
 
 /* ====================================================================== ==== */
 .footer {
@@ -1305,11 +1239,7 @@ body {
 }
 
 
-
 /* ====================================================================== ==== */
-
-
-
 
 .section-5 {
     font-family: "Segoe UI", sans-serif;
@@ -1426,7 +1356,6 @@ body {
     padding: 2rem;
 }
 
-/* Swiper styles */
 .swiper {
     position: relative;
     overflow: hidden;
@@ -1516,12 +1445,6 @@ body {
 }
 
 
-
-
-
-
-
-
 .header-inbox-btn {
     display: inline-block;
     background-color: #e74c3c;
@@ -1538,7 +1461,6 @@ body {
     transition: transform 0.25s ease, background-color 0.3s ease;
     animation: header-pulse 1.6s ease-in-out infinite;
     white-space: normal;
-    /* ✅ cho phép xuống dòng khi có <br> */
     max-width: 360px;
     margin: 0 auto;
     margin-left: 1.7rem;
@@ -1551,7 +1473,6 @@ body {
     color: #fff;
 }
 
-/* Pulse animation */
 @keyframes header-pulse {
 
     0%,
@@ -1608,43 +1529,41 @@ body {
   margin: 0 auto;
   text-align: center;
   table-layout: fixed;
-  font-size: 1rem; /* ~16px */
+  font-size: 1rem; 
 }
 
 .subject-table td {
-  width: 25%; /* 4 cột */
+  width: 25%; 
   padding: 1rem;
   border: 0.0625rem solid #f0f0f0;
   font-weight: 600;
-  color: #fff; /* chữ trắng mặc định trên nền đậm */
+  color: #fff; 
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
   word-wrap: break-word;
-  background-color: #e74c3c; /* đỏ đậm mặc định */
-  text-transform: uppercase; /* ✅ in hoa toàn bộ chữ */
+  background-color: #e74c3c; 
+  text-transform: uppercase; 
 }
 
-/* Màu nền xen kẽ: đỏ đậm hơn 1 chút */
 .subject-table td:nth-child(odd) {
   background-color: #c0392b;
 }
 
-/* Hover */
 .subject-table td:hover {
   filter: brightness(1.1);
 }
 
-/* Active: đổi ngược → nền nhạt, chữ đậm */
+
 .subject-table td.active {
-  background-color: #fdecea !important; /* đỏ nhạt */
-  color: #c0392b !important; /* chữ đỏ đậm */
+  background-color: #fdecea !important;
+  color: #c0392b !important; 
 }
 
 /* ================= GRID ================== */
 .subject-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* desktop 4 cột */
-  gap: 0.625rem; /* ~10px */
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 0.625rem; 
   font-size: 1rem;
 }
 
@@ -1654,15 +1573,15 @@ body {
   font-weight: 600;
   border: 0.0625rem solid #f0f0f0;
   border-radius: 0.375rem;
-  background-color: #e74c3c; /* đỏ đậm mặc định */
+  background-color: #e74c3c; 
   color: #fff;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s, transform 0.2s;
-  text-transform: uppercase; /* ✅ in hoa chữ */
+  text-transform: uppercase; 
 }
 
 .subject-cell:nth-child(odd) {
-  background-color: #c0392b; /* đỏ đậm hơn xen kẽ */
+  background-color: #c0392b; 
 }
 
 .subject-cell:hover {
@@ -1670,14 +1589,12 @@ body {
   transform: translateY(-0.125rem);
 }
 
-/* Active: đảo màu */
 .subject-cell.active {
-  background-color: #fdecea !important; /* đỏ nhạt */
+  background-color: #fdecea !important; 
   color: #c0392b !important;
 }
 
-/* 📱 Mobile: chỉ 2 cột */
-@media (max-width: 47.9375rem) { /* 767px */
+@media (max-width: 47.9375rem) {
   .subject-grid {
     grid-template-columns: repeat(2, 1fr);
   }

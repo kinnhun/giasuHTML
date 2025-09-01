@@ -2,34 +2,22 @@
 <section class="section-4 py-5">
   <div class="container">
     <h2 class="section-4__heading text-center mb-4">DANH SÁCH LỚP GIA SƯ MỚI NHẤT</h2>
-
     <div class="row mb-4">
-     
-    <!-- Khung danh sách môn học -->
-<!-- Khung danh sách môn học -->
-<div class="row mb-4">
-  <div class="col-12">
-    <div id="subjectTableContainer"></div>
-  </div>
-</div>
-
-
-
-      <!-- Ô tìm kiếm -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div id="subjectTableContainer"></div>
+        </div>
+      </div>
       <div class="col-md-4 mb-2">
         <input type="text" id="classSearchInput" class="form-control"
           placeholder="Tìm theo mã môn, khu vực, học phí...">
       </div>
-
-      <!-- Ô chọn môn học -->
       <div class="col-md-4 mb-2">
         <select id="subjectFilter" class="form-control">
           <option value="">Tất cả môn học</option>
-          <!-- JS sẽ tự fill các môn từ Sheet -->
         </select>
       </div>
     </div>
-
     <div class="row g-4" id="classListContainer">
       <div class="text-center w-100" id="loading">Đang tải dữ liệu lớp học...</div>
     </div>
